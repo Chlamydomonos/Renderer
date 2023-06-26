@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * @brief 2D点，用齐次坐标表示
+ */
 class Point2
 {
 private:

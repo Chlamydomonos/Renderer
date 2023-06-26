@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * @brief 2D向量，用齐次坐标表示
+ */
 class Vector2
 {
 private:
