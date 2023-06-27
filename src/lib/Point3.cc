@@ -29,15 +29,6 @@ Point3 &Point3::asProduct(const Matrix3 &a, const Point3 &b)
     return *this;
 }
 
-Point3 &Point3::asProduct(const Vector3 &a, const Vector3 &b)
-{
-    rawX = a.rawY * b.rawZ - a.rawZ * b.rawY;
-    rawY = a.rawZ * b.rawX - a.rawX * b.rawZ;
-    rawZ = a.rawX * b.rawY - a.rawY * b.rawX;
-    rawW = 1.0f;
-    return *this;
-}
-
 Point3 &Point3::copy(const Vector3 &a)
 {
     rawX = a.rawX;

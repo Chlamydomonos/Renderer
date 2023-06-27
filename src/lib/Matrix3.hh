@@ -349,4 +349,26 @@ public:
     {
         return data[i][j];
     }
+
+    /**
+     * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
+     */
+    Matrix3 &perspective(float n, float f)
+    {
+        data[0][0] = n;
+        data[1][1] = n;
+        data[2][2] = f + n;
+        data[2][3] = -f * n;
+        data[3][2] = 1.0f;
+        return *this;
+    }
+
+    /**
+     * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
+     */
+    Matrix3 &orthographic(float l, float r, float b, float t, float n, float f)
+    {
+        return translate(-(r + l) / 2.0f, -(t + b) / 2.0f, -(f + n) / 2.0f)
+            .thenScale(2.0f / (r - l), 2.0f / (t - b), 2.0f / (f - n));
+    }
 };

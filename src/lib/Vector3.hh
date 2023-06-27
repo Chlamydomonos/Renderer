@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 class Vector3
 {
 private:
@@ -54,9 +56,9 @@ public:
      */
     Vector3 &asProduct(const Vector3 &a, const Vector3 &b)
     {
-        rawX = a.rawY * b.rawZ - a.rawZ * b.rawY;
+        rawX = a.rawZ * b.rawY - a.rawY * b.rawZ;
         rawY = a.rawZ * b.rawX - a.rawX * b.rawZ;
-        rawZ = a.rawX * b.rawY - a.rawY * b.rawX;
+        rawZ = a.rawY * b.rawX - a.rawX * b.rawY;
         return *this;
     }
 
@@ -85,6 +87,15 @@ public:
     }
 
     Vector3 &copy(const Point3 &a);
+
+    Vector3 &normalize()
+    {
+        float length = sqrt(rawX * rawX + rawY * rawY + rawZ * rawZ);
+        rawX /= length;
+        rawY /= length;
+        rawZ /= length;
+        return *this;
+    }
 
     float operator*(const Vector3 &a) const
     {

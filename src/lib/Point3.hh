@@ -54,13 +54,11 @@ public:
         auto bx = b.x();
         auto by = b.y();
         auto bz = b.z();
-        rawX = ay * bz - az * by;
+        rawX = az * by - ay * bz;
         rawY = az * bx - ax * bz;
-        rawZ = ax * by - ay * bx;
+        rawZ = ay * bx - ax * by;
         rawW = 1.0f;
     }
-
-    Point3 &asProduct(const Vector3 &a, const Vector3 &b);
 
     Point3 &copy(const Point3 &a)
     {

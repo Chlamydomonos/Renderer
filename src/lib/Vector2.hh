@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 /**
  * @brief 2D向量，用齐次坐标表示
  */
@@ -63,6 +65,14 @@ public:
     }
 
     Vector2 &copy(const Point2 &a);
+
+    Vector2 &normalize()
+    {
+        float length = sqrt(rawX * rawX + rawY * rawY);
+        rawX /= length;
+        rawY /= length;
+        return *this;
+    }
 
     float operator*(const Vector2 &b) const
     {

@@ -8,11 +8,6 @@
 using ScopedLock = std::scoped_lock<std::mutex>;
 using UniqueLock = std::unique_lock<std::mutex>;
 
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 768
-#define TIMER_ID 1
-#define FPS 24
-
 class WindowsHandler
 {
 private:
