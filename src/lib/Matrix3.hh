@@ -294,4 +294,59 @@ public:
     }
 
     Matrix3 &thenRotate(float theta, const Vector3 &axis);
+
+    /**
+     * @note 此函数的参数不能是this
+     */
+    Matrix3 &asProduct(const Matrix3 &a, const Matrix3 &b)
+    {
+        data[0][0] = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0] + a.data[0][3] * b.data[3][0];
+        data[0][1] = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1] + a.data[0][3] * b.data[3][1];
+        data[0][2] = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2] + a.data[0][3] * b.data[3][2];
+        data[0][3] = a.data[0][0] * b.data[0][3] + a.data[0][1] * b.data[1][3] + a.data[0][2] * b.data[2][3] + a.data[0][3] * b.data[3][3];
+        data[1][0] = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0] + a.data[1][3] * b.data[3][0];
+        data[1][1] = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1] + a.data[1][3] * b.data[3][1];
+        data[1][2] = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2] + a.data[1][3] * b.data[3][2];
+        data[1][3] = a.data[1][0] * b.data[0][3] + a.data[1][1] * b.data[1][3] + a.data[1][2] * b.data[2][3] + a.data[1][3] * b.data[3][3];
+        data[2][0] = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0] + a.data[2][3] * b.data[3][0];
+        data[2][1] = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1] + a.data[2][3] * b.data[3][1];
+        data[2][2] = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2] + a.data[2][3] * b.data[3][2];
+        data[2][3] = a.data[2][0] * b.data[0][3] + a.data[2][1] * b.data[1][3] + a.data[2][2] * b.data[2][3] + a.data[2][3] * b.data[3][3];
+        data[3][0] = a.data[3][0] * b.data[0][0] + a.data[3][1] * b.data[1][0] + a.data[3][2] * b.data[2][0] + a.data[3][3] * b.data[3][0];
+        data[3][1] = a.data[3][0] * b.data[0][1] + a.data[3][1] * b.data[1][1] + a.data[3][2] * b.data[2][1] + a.data[3][3] * b.data[3][1];
+        data[3][2] = a.data[3][0] * b.data[0][2] + a.data[3][1] * b.data[1][2] + a.data[3][2] * b.data[2][2] + a.data[3][3] * b.data[3][2];
+        data[3][3] = a.data[3][0] * b.data[0][3] + a.data[3][1] * b.data[1][3] + a.data[3][2] * b.data[2][3] + a.data[3][3] * b.data[3][3];
+        return *this;
+    }
+
+    Matrix3 &copy(const Matrix3 &a)
+    {
+        data[0][0] = a.data[0][0];
+        data[0][1] = a.data[0][1];
+        data[0][2] = a.data[0][2];
+        data[0][3] = a.data[0][3];
+        data[1][0] = a.data[1][0];
+        data[1][1] = a.data[1][1];
+        data[1][2] = a.data[1][2];
+        data[1][3] = a.data[1][3];
+        data[2][0] = a.data[2][0];
+        data[2][1] = a.data[2][1];
+        data[2][2] = a.data[2][2];
+        data[2][3] = a.data[2][3];
+        data[3][0] = a.data[3][0];
+        data[3][1] = a.data[3][1];
+        data[3][2] = a.data[3][2];
+        data[3][3] = a.data[3][3];
+        return *this;
+    }
+
+    const float &operator()(int i, int j) const
+    {
+        return data[i][j];
+    }
+
+    float &operator()(int i, int j)
+    {
+        return data[i][j];
+    }
 };

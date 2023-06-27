@@ -18,7 +18,7 @@ class WindowsHandler
 private:
     WindowsHandler() {}
     WindowsHandler(const WindowsHandler&) = delete;
-    WindowsHandler& operator=(const WindowsHandler&) = delete;
+    WindowsHandler &operator=(const WindowsHandler&) = delete;
 
     std::thread renderThread;
     std::mutex renderMutex;

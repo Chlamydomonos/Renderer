@@ -24,18 +24,13 @@ public:
         return rawY;
     }
 
-    float operator*(const Vector2& b) const
-    {
-        return rawX * b.rawX + rawY * b.rawY;
-    }
-
-    Vector2 &asSum(const Vector2& a, const Vector2& b)
+    Vector2 &asSum(const Vector2 &a, const Vector2 &b)
     {
         rawX = a.rawX + b.rawX;
         rawY = a.rawY + b.rawY;
         return *this;
     }
-    Vector2 &asDifference(const Vector2& a, const Vector2& b)
+    Vector2 &asDifference(const Vector2 &a, const Vector2 &b)
     {
         rawX = a.rawX - b.rawX;
         rawY = a.rawY - b.rawY;
@@ -45,26 +40,32 @@ public:
     /**
      * @note 此函数的参数不能是this
      */
-    Vector2 &asProduct(const Matrix2& a, const Vector2& b);
-    Vector2 &asProduct(const Vector2& a, float b)
+    Vector2 &asProduct(const Matrix2 &a, const Vector2 &b);
+
+    Vector2 &asProduct(const Vector2 &a, float b)
     {
         rawX = a.rawX * b;
         rawY = a.rawY * b;
         return *this;
     }
-    Vector2 &asQuotient(const Vector2& a, float b)
+    Vector2 &asQuotient(const Vector2 &a, float b)
     {
         rawX = a.rawX / b;
         rawY = a.rawY / b;
         return *this;
     }
 
-    Vector2 &copy(const Vector2& a)
+    Vector2 &copy(const Vector2 &a)
     {
         rawX = a.rawX;
         rawY = a.rawY;
         return *this;
     }
 
-    Vector2 &copy(const Point2& a);
+    Vector2 &copy(const Point2 &a);
+
+    float operator*(const Vector2 &b) const
+    {
+        return rawX * b.rawX + rawY * b.rawY;
+    }
 };

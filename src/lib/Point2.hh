@@ -49,4 +49,9 @@ public:
     }
 
     Point2 &copy(const Vector2 &a);
+
+    float operator*(const Point2 &a) const
+    {
+        return (rawX * a.rawX + rawY * a.rawY) / (rawZ * a.rawZ);
+    }
 };

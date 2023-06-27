@@ -170,7 +170,7 @@ public:
     /**
      * @note 此函数的参数不能是this
      */
-    void asProduct(const Matrix2 &a, const Matrix2 &b)
+    Matrix2 &asProduct(const Matrix2 &a, const Matrix2 &b)
     {
         data[0][0] = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
         data[0][1] = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
@@ -181,9 +181,10 @@ public:
         data[2][0] = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
         data[2][1] = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
         data[2][2] = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
+        return *this;
     }
 
-    void copy(const Matrix2 &a)
+    Matrix2 &copy(const Matrix2 &a)
     {
         data[0][0] = a.data[0][0];
         data[0][1] = a.data[0][1];
@@ -194,9 +195,10 @@ public:
         data[2][0] = a.data[2][0];
         data[2][1] = a.data[2][1];
         data[2][2] = a.data[2][2];
+        return *this;
     }
 
-    const float operator()(int i, int j) const
+    const float &operator()(int i, int j) const
     {
         return data[i][j];
     }

@@ -28,5 +28,53 @@ public:
         return rawZ / rawW;
     }
 
-    Point3 &asProduct(const Matrix3& a, const Point3& b);
+    Point3 &asSum(const Point3 &a, const Point3 &b)
+    {
+        rawX = a.rawX + b.rawX;
+        rawY = a.rawY + b.rawY;
+        rawZ = a.rawZ + b.rawZ;
+        rawW = a.rawW + b.rawW;
+        return *this;
+    }
+
+    Point3 &asSum(const Point3 &a, const Vector3 &b);
+
+    Point3 &asDifference(const Point3 &a, const Vector3 &b);
+
+    /**
+     * @note 此函数的参数不能是this
+     */
+    Point3 &asProduct(const Matrix3 &a, const Point3 &b);
+
+    Point3 &asProduct(const Point3 &a, const Point3 &b)
+    {
+        auto ax = a.x();
+        auto ay = a.y();
+        auto az = a.z();
+        auto bx = b.x();
+        auto by = b.y();
+        auto bz = b.z();
+        rawX = ay * bz - az * by;
+        rawY = az * bx - ax * bz;
+        rawZ = ax * by - ay * bx;
+        rawW = 1.0f;
+    }
+
+    Point3 &asProduct(const Vector3 &a, const Vector3 &b);
+
+    Point3 &copy(const Point3 &a)
+    {
+        rawX = a.rawX;
+        rawY = a.rawY;
+        rawZ = a.rawZ;
+        rawW = a.rawW;
+        return *this;
+    }
+
+    Point3 &copy(const Vector3 &a);
+
+    float operator*(const Point3 &a) const
+    {
+        return (rawX * a.rawX + rawY * a.rawY + rawZ * a.rawZ) / (rawW * a.rawW);
+    }
 };
