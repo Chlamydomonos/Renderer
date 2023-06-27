@@ -9,6 +9,8 @@ class Matrix2
 {
 private:
     float data[3][3] = {0.0f};
+    friend class Point2;
+    friend class Vector2;
 public:
     Matrix2() = default;
     Matrix2(float a, float b, float c, float d) : data{{a, b, 0.0f}, {c, d, 0.0f}, {0.0f, 0.0f, 1.0f}} {}
@@ -158,5 +160,18 @@ public:
         data[1][1] = -data[1][1];
         data[2][0] = -data[2][0];
         return *this;
+    }
+
+    void asProduct(const Matrix2 &a, const Matrix2 &b)
+    {
+        data[0][0] = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
+        data[0][1] = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
+        data[0][2] = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2];
+        data[1][0] = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0];
+        data[1][1] = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1];
+        data[1][2] = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2];
+        data[2][0] = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
+        data[2][1] = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
+        data[2][2] = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
     }
 };
