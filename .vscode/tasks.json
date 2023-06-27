@@ -12,7 +12,7 @@
 			"problemMatcher": [],
 			"detail": "CMake build",
 			"dependsOn": [
-				"configure"
+				"Configure"
 			]
 		},
 		{
@@ -21,6 +21,6 @@
 			"command": "configure",
 			"problemMatcher": [],
 			"detail": "CMake configure"
-		}
+		},
 	]
 }

@@ -19,6 +19,18 @@ public:
     /**
      * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
      */
+    Matrix3 &identity()
+    {
+        data[0][0] = 1.0f;
+        data[1][1] = 1.0f;
+        data[2][2] = 1.0f;
+        data[3][3] = 1.0f;
+        return *this;
+    }
+
+    /**
+     * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
+     */
     Matrix3 &translate(float x, float y, float z)
     {
         data[0][0] = 1.0f;
@@ -62,7 +74,6 @@ public:
     {
         auto cosTheta = cos(theta);
         auto sinTheta = sin(theta);
-
         data[0][0] = 1.0f;
         data[1][1] = cosTheta;
         data[1][2] = sinTheta;
@@ -80,9 +91,9 @@ public:
         auto cosTheta = cos(theta);
         auto sinTheta = sin(theta);
         data[0][0] = cosTheta;
-        data[0][2] = sinTheta;
+        data[0][2] = -sinTheta;
         data[1][1] = 1.0f;
-        data[2][0] = -sinTheta;
+        data[2][0] = sinTheta;
         data[2][2] = cosTheta;
         data[3][3] = 1.0f;
         return *this;
@@ -96,11 +107,191 @@ public:
         auto cosTheta = cos(theta);
         auto sinTheta = sin(theta);
         data[0][0] = cosTheta;
-        data[0][1] = -sinTheta;
-        data[1][0] = sinTheta;
+        data[0][1] = sinTheta;
+        data[1][0] = -sinTheta;
         data[1][1] = cosTheta;
         data[2][2] = 1.0f;
         data[3][3] = 1.0f;
         return *this;
     }
+
+    /**
+     * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
+     */
+    Matrix3 &rotate(float theta, float x, float y, float z)
+    {
+        auto cosTheta = cos(theta);
+        auto sinTheta = sin(theta);
+
+        data[0][0] = cosTheta + (1 - cosTheta) * x * x;
+        data[0][1] = (1 - cosTheta) * x * y + sinTheta * z;
+        data[0][2] = (1 - cosTheta) * x * z - sinTheta * y;
+        data[1][0] = (1 - cosTheta) * x * y - sinTheta * z;
+        data[1][1] = cosTheta + (1 - cosTheta) * y * y;
+        data[1][2] = (1 - cosTheta) * y * z + sinTheta * x;
+        data[2][0] = (1 - cosTheta) * x * z + sinTheta * y;
+        data[2][1] = (1 - cosTheta) * y * z - sinTheta * x;
+        data[2][2] = cosTheta + (1 - cosTheta) * z * z;
+        data[3][3] = 1.0f;
+        return *this;
+    }
+
+    /**
+     * @note 此函数只能在未初始化（使用默认构造函数创建）的矩阵上调用
+     */
+    Matrix3 &rotate(float theta, const Vector3 &axis);
+
+    Matrix3 &thenTranslate(float x, float y, float z)
+    {
+        data[0][0] += data[3][0] * x;
+        data[0][1] += data[3][1] * x;
+        data[0][2] += data[3][2] * x;
+        data[0][3] += data[3][3] * x;
+        data[1][0] += data[3][0] * y;
+        data[1][1] += data[3][1] * y;
+        data[1][2] += data[3][2] * y;
+        data[1][3] += data[3][3] * y;
+        data[2][0] += data[3][0] * z;
+        data[2][1] += data[3][1] * z;
+        data[2][2] += data[3][2] * z;
+        data[2][3] += data[3][3] * z;
+        return *this;
+    }
+
+    Matrix3 &thenScale(float r)
+    {
+        data[0][0] *= r;
+        data[0][1] *= r;
+        data[0][2] *= r;
+        data[0][3] *= r;
+        data[1][0] *= r;
+        data[1][1] *= r;
+        data[1][2] *= r;
+        data[1][3] *= r;
+        data[2][0] *= r;
+        data[2][1] *= r;
+        data[2][2] *= r;
+        data[2][3] *= r;
+        return *this;
+    }
+
+    Matrix3 &thenScale(float x, float y, float z)
+    {
+        data[0][0] *= x;
+        data[0][1] *= x;
+        data[0][2] *= x;
+        data[0][3] *= x;
+        data[1][0] *= y;
+        data[1][1] *= y;
+        data[1][2] *= y;
+        data[1][3] *= y;
+        data[2][0] *= z;
+        data[2][1] *= z;
+        data[2][2] *= z;
+        data[2][3] *= z;
+        return *this;
+    }
+
+    Matrix3 &thenRoll(float theta)
+    {
+        auto cosTheta = cos(theta);
+        auto sinTheta = sin(theta);
+        auto b0 = data[1][0];
+        auto b1 = data[1][1];
+        auto b2 = data[1][2];
+        auto b3 = data[1][3];
+        auto c0 = data[2][0];
+        auto c1 = data[2][1];
+        auto c2 = data[2][2];
+        auto c3 = data[2][3];
+        data[1][0] = b0 * cosTheta + c0 * sinTheta;
+        data[1][1] = b1 * cosTheta + c1 * sinTheta;
+        data[1][2] = b2 * cosTheta + c2 * sinTheta;
+        data[1][3] = b3 * cosTheta + c3 * sinTheta;
+        data[2][0] = c0 * cosTheta - b0 * sinTheta;
+        data[2][1] = c1 * cosTheta - b1 * sinTheta;
+        data[2][2] = c2 * cosTheta - b2 * sinTheta;
+        data[2][3] = c3 * cosTheta - b3 * sinTheta;
+        return *this;
+    }
+
+    Matrix3 &thenPitch(float theta)
+    {
+        auto cosTheta = cos(theta);
+        auto sinTheta = sin(theta);
+        auto a0 = data[0][0];
+        auto a1 = data[0][1];
+        auto a2 = data[0][2];
+        auto a3 = data[0][3];
+        auto c0 = data[2][0];
+        auto c1 = data[2][1];
+        auto c2 = data[2][2];
+        auto c3 = data[2][3];
+        data[0][0] = a0 * cosTheta - c0 * sinTheta;
+        data[0][1] = a1 * cosTheta - c1 * sinTheta;
+        data[0][2] = a2 * cosTheta - c2 * sinTheta;
+        data[0][3] = a3 * cosTheta - c3 * sinTheta;
+        data[2][0] = a0 * sinTheta + c0 * cosTheta;
+        data[2][1] = a1 * sinTheta + c1 * cosTheta;
+        data[2][2] = a2 * sinTheta + c2 * cosTheta;
+        data[2][3] = a3 * sinTheta + c3 * cosTheta;
+        return *this;
+    }
+
+    Matrix3 &thenYaw(float theta)
+    {
+        auto cosTheta = cos(theta);
+        auto sinTheta = sin(theta);
+        auto a0 = data[0][0];
+        auto a1 = data[0][1];
+        auto a2 = data[0][2];
+        auto a3 = data[0][3];
+        auto b0 = data[1][0];
+        auto b1 = data[1][1];
+        auto b2 = data[1][2];
+        auto b3 = data[1][3];
+        data[0][0] = a0 * cosTheta + b0 * sinTheta;
+        data[0][1] = a1 * cosTheta + b1 * sinTheta;
+        data[0][2] = a2 * cosTheta + b2 * sinTheta;
+        data[0][3] = a3 * cosTheta + b3 * sinTheta;
+        data[1][0] = b0 * cosTheta - a0 * sinTheta;
+        data[1][1] = b1 * cosTheta - a1 * sinTheta;
+        data[1][2] = b2 * cosTheta - a2 * sinTheta;
+        data[1][3] = b3 * cosTheta - a3 * sinTheta;
+        return *this;
+    }
+
+    Matrix3 &thenRotate(float theta, float x, float y, float z)
+    {
+        auto cosTheta = cos(theta);
+        auto sinTheta = sin(theta);
+        auto a0 = data[0][0];
+        auto a1 = data[0][1];
+        auto a2 = data[0][2];
+        auto a3 = data[0][3];
+        auto b0 = data[1][0];
+        auto b1 = data[1][1];
+        auto b2 = data[1][2];
+        auto b3 = data[1][3];
+        auto c0 = data[2][0];
+        auto c1 = data[2][1];
+        auto c2 = data[2][2];
+        auto c3 = data[2][3];
+        auto cosTheta1 = 1 - cosTheta;
+        data[0][0] = a0 * (cosTheta1 * x * x + cosTheta) + b0 * (cosTheta1 * x * y - sinTheta * z) + c0 * (cosTheta1 * x * z + sinTheta * y);
+        data[0][1] = a1 * (cosTheta1 * x * x + cosTheta) + b1 * (cosTheta1 * x * y - sinTheta * z) + c1 * (cosTheta1 * x * z + sinTheta * y);
+        data[0][2] = a2 * (cosTheta1 * x * x + cosTheta) + b2 * (cosTheta1 * x * y - sinTheta * z) + c2 * (cosTheta1 * x * z + sinTheta * y);
+        data[0][3] = a3 * (cosTheta1 * x * x + cosTheta) + b3 * (cosTheta1 * x * y - sinTheta * z) + c3 * (cosTheta1 * x * z + sinTheta * y);
+        data[1][0] = a0 * (cosTheta1 * x * y - sinTheta * z) + b0 * (cosTheta1 * y * y + cosTheta) + c0 * (cosTheta1 * y * z + sinTheta * x);
+        data[1][1] = a1 * (cosTheta1 * x * y - sinTheta * z) + b1 * (cosTheta1 * y * y + cosTheta) + c1 * (cosTheta1 * y * z + sinTheta * x);
+        data[1][2] = a2 * (cosTheta1 * x * y - sinTheta * z) + b2 * (cosTheta1 * y * y + cosTheta) + c2 * (cosTheta1 * y * z + sinTheta * x);
+        data[1][3] = a3 * (cosTheta1 * x * y - sinTheta * z) + b3 * (cosTheta1 * y * y + cosTheta) + c3 * (cosTheta1 * y * z + sinTheta * x);
+        data[2][0] = a0 * (cosTheta1 * x * z + sinTheta * y) + b0 * (cosTheta1 * y * z - sinTheta * x) + c0 * (cosTheta1 * z * z + cosTheta);
+        data[2][1] = a1 * (cosTheta1 * x * z + sinTheta * y) + b1 * (cosTheta1 * y * z - sinTheta * x) + c1 * (cosTheta1 * z * z + cosTheta);
+        data[2][2] = a2 * (cosTheta1 * x * z + sinTheta * y) + b2 * (cosTheta1 * y * z - sinTheta * x) + c2 * (cosTheta1 * z * z + cosTheta);
+        data[2][3] = a3 * (cosTheta1 * x * z + sinTheta * y) + b3 * (cosTheta1 * y * z - sinTheta * x) + c3 * (cosTheta1 * z * z + cosTheta);
+        return *this;
+    }
+
+    Matrix3 &thenRotate(float theta, const Vector3 &axis);
 };
