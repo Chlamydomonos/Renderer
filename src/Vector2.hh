@@ -39,6 +39,10 @@ public:
         rawX = a.rawX - b.rawX;
         rawY = a.rawY - b.rawY;
     }
+
+    /**
+     * @note 此函数的参数不能是this
+     */
     void asProduct(const Matrix2& a, const Vector2& b);
     void asProduct(const Vector2& a, float b)
     {
@@ -49,5 +53,19 @@ public:
     {
         rawX = a.rawX / b;
         rawY = a.rawY / b;
+    }
+
+    void copy(const Vector2& a)
+    {
+        rawX = a.rawX;
+        rawY = a.rawY;
+        rawZ = a.rawZ;
+    }
+
+    void copy(const Point2& a)
+    {
+        rawX = a.rawX / a.rawZ;
+        rawY = a.rawY / a.rawZ;
+        rawZ = 0.0f;
     }
 };

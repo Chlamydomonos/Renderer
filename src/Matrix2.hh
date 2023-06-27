@@ -167,26 +167,33 @@ public:
         return *this;
     }
 
+    /**
+     * @note 此函数的参数不能是this
+     */
     void asProduct(const Matrix2 &a, const Matrix2 &b)
     {
-        auto a0 = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
-        auto a1 = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
-        auto a2 = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2];
-        auto b0 = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0];
-        auto b1 = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1];
-        auto b2 = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2];
-        auto c0 = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
-        auto c1 = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
-        auto c2 = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
-        data[0][0] = a0;
-        data[0][1] = a1;
-        data[0][2] = a2;
-        data[1][0] = b0;
-        data[1][1] = b1;
-        data[1][2] = b2;
-        data[2][0] = c0;
-        data[2][1] = c1;
-        data[2][2] = c2;
+        data[0][0] = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
+        data[0][1] = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
+        data[0][2] = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2];
+        data[1][0] = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0];
+        data[1][1] = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1];
+        data[1][2] = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2];
+        data[2][0] = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
+        data[2][1] = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
+        data[2][2] = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
+    }
+
+    void copy(const Matrix2 &a)
+    {
+        data[0][0] = a.data[0][0];
+        data[0][1] = a.data[0][1];
+        data[0][2] = a.data[0][2];
+        data[1][0] = a.data[1][0];
+        data[1][1] = a.data[1][1];
+        data[1][2] = a.data[1][2];
+        data[2][0] = a.data[2][0];
+        data[2][1] = a.data[2][1];
+        data[2][2] = a.data[2][2];
     }
 
     const float operator()(int i, int j) const

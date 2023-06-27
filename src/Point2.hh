@@ -33,5 +33,23 @@ public:
         rawZ = a.rawZ + b.rawZ;
     }
     void asDifference(const Point2 &a, const Vector2 &b);
+
+    /**
+     * @note 此函数的参数不能是this
+     */
     void asProduct(const Matrix2 &a, const Point2 &b);
+
+    void copy(const Point2 &a)
+    {
+        rawX = a.rawX;
+        rawY = a.rawY;
+        rawZ = a.rawZ;
+    }
+
+    void copy(const Vector2 &a)
+    {
+        rawX = a.rawX;
+        rawY = a.rawY;
+        rawZ = 1;
+    }
 };
