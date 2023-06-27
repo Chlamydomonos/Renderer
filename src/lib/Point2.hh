@@ -46,10 +46,5 @@ public:
         rawZ = a.rawZ;
     }
 
-    void copy(const Vector2 &a)
-    {
-        rawX = a.rawX;
-        rawY = a.rawY;
-        rawZ = 1;
-    }
+    void copy(const Vector2 &a);
 };

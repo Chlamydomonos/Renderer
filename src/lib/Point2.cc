@@ -20,3 +20,10 @@ void Point2::asProduct(const Matrix2& a, const Point2& b)
     rawY = a.data[1][0] * b.rawX + a.data[1][1] * b.rawY + a.data[1][2] * b.rawZ;
     rawZ = a.data[2][0] * b.rawX + a.data[2][1] * b.rawY + a.data[2][2] * b.rawZ;
 }
+
+void Point2::copy(const Vector2& a)
+{
+    rawX = a.rawX;
+    rawY = a.rawY;
+    rawZ = 1.0f;
+}

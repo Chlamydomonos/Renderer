@@ -17,11 +17,11 @@ public:
 
     float x() const
     {
-        return rawX / rawZ;
+        return rawX;
     }
     float y() const
     {
-        return rawY / rawZ;
+        return rawY;
     }
 
     float operator*(const Vector2& b) const
@@ -62,10 +62,5 @@ public:
         rawZ = a.rawZ;
     }
 
-    void copy(const Point2& a)
-    {
-        rawX = a.rawX / a.rawZ;
-        rawY = a.rawY / a.rawZ;
-        rawZ = 0.0f;
-    }
+    void copy(const Point2& a);
 };
