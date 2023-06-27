@@ -101,9 +101,12 @@ public:
 
     Matrix2 &thenTranslate(float x, float y)
     {
-        data[0][2] += data[0][0] * x + data[0][1] * y;
-        data[1][2] += data[1][0] * x + data[1][1] * y;
-        data[2][2] += data[2][0] * x + data[2][1] * y;
+        data[0][0] += x * data[2][0];
+        data[0][1] += x * data[2][1];
+        data[0][2] += x * data[2][2];
+        data[1][0] += y * data[2][0];
+        data[1][1] += y * data[2][1];
+        data[1][2] += y * data[2][2];
         return *this;
     }
 
@@ -111,67 +114,88 @@ public:
     {
         data[0][0] *= r;
         data[0][1] *= r;
+        data[0][2] *= r;
         data[1][0] *= r;
         data[1][1] *= r;
-        data[2][0] *= r;
-        data[2][1] *= r;
+        data[1][2] *= r;
         return *this;
     }
 
     Matrix2 &thenScale(float x, float y)
     {
         data[0][0] *= x;
-        data[0][1] *= y;
-        data[1][0] *= x;
+        data[0][1] *= x;
+        data[0][2] *= x;
+        data[1][0] *= y;
         data[1][1] *= y;
-        data[2][0] *= x;
-        data[2][1] *= y;
+        data[1][2] *= y;
         return *this;
     }
 
     Matrix2 &thenRotate(float theta)
     {
-        auto cosTheta = cos(theta);
         auto sinTheta = sin(theta);
-        auto a = data[0][0];
-        auto b = data[0][1];
-        auto c = data[1][0];
-        auto d = data[1][1];
-        data[0][0] = a * cosTheta + b * sinTheta;
-        data[0][1] = -a * sinTheta + b * cosTheta;
-        data[1][0] = c * cosTheta + d * sinTheta;
-        data[1][1] = -c * sinTheta + d * cosTheta;
-        data[2][0] = data[2][0] * cosTheta + data[2][1] * sinTheta;
-        data[2][1] = -data[2][0] * sinTheta + data[2][1] * cosTheta;
+        auto cosTheta = cos(theta);
+        auto a0 = data[0][0];
+        auto a1 = data[0][1];
+        auto a2 = data[0][2];
+        auto b0 = data[1][0];
+        auto b1 = data[1][1];
+        auto b2 = data[1][2];
+        data[0][0] = a0 * cosTheta - b0 * sinTheta;
+        data[0][1] = a1 * cosTheta - b1 * sinTheta;
+        data[0][2] = a2 * cosTheta - b2 * sinTheta;
+        data[1][0] = a0 * sinTheta + b0 * cosTheta;
+        data[1][1] = a1 * sinTheta + b1 * cosTheta;
+        data[1][2] = a2 * sinTheta + b2 * cosTheta;
         return *this;
     }
 
     Matrix2 &thenReflectX()
     {
-        data[0][1] = -data[0][1];
         data[1][0] = -data[1][0];
-        data[2][1] = -data[2][1];
+        data[1][1] = -data[1][1];
+        data[1][2] = -data[1][2];
         return *this;
     }
 
     Matrix2 &thenReflectY()
     {
         data[0][0] = -data[0][0];
-        data[1][1] = -data[1][1];
-        data[2][0] = -data[2][0];
+        data[0][1] = -data[0][1];
+        data[0][2] = -data[0][2];
         return *this;
     }
 
     void asProduct(const Matrix2 &a, const Matrix2 &b)
     {
-        data[0][0] = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
-        data[0][1] = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
-        data[0][2] = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2];
-        data[1][0] = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0];
-        data[1][1] = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1];
-        data[1][2] = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2];
-        data[2][0] = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
-        data[2][1] = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
-        data[2][2] = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
+        auto a0 = a.data[0][0] * b.data[0][0] + a.data[0][1] * b.data[1][0] + a.data[0][2] * b.data[2][0];
+        auto a1 = a.data[0][0] * b.data[0][1] + a.data[0][1] * b.data[1][1] + a.data[0][2] * b.data[2][1];
+        auto a2 = a.data[0][0] * b.data[0][2] + a.data[0][1] * b.data[1][2] + a.data[0][2] * b.data[2][2];
+        auto b0 = a.data[1][0] * b.data[0][0] + a.data[1][1] * b.data[1][0] + a.data[1][2] * b.data[2][0];
+        auto b1 = a.data[1][0] * b.data[0][1] + a.data[1][1] * b.data[1][1] + a.data[1][2] * b.data[2][1];
+        auto b2 = a.data[1][0] * b.data[0][2] + a.data[1][1] * b.data[1][2] + a.data[1][2] * b.data[2][2];
+        auto c0 = a.data[2][0] * b.data[0][0] + a.data[2][1] * b.data[1][0] + a.data[2][2] * b.data[2][0];
+        auto c1 = a.data[2][0] * b.data[0][1] + a.data[2][1] * b.data[1][1] + a.data[2][2] * b.data[2][1];
+        auto c2 = a.data[2][0] * b.data[0][2] + a.data[2][1] * b.data[1][2] + a.data[2][2] * b.data[2][2];
+        data[0][0] = a0;
+        data[0][1] = a1;
+        data[0][2] = a2;
+        data[1][0] = b0;
+        data[1][1] = b1;
+        data[1][2] = b2;
+        data[2][0] = c0;
+        data[2][1] = c1;
+        data[2][2] = c2;
+    }
+
+    const float operator()(int i, int j) const
+    {
+        return data[i][j];
+    }
+
+    float &operator()(int i, int j)
+    {
+        return data[i][j];
     }
 };

@@ -1,3 +1,5 @@
+#include "Vector2.hh"
+
 #include "geometry2.hh"
 
 void Vector2::asProduct(const Matrix2& a, const Vector2& b)

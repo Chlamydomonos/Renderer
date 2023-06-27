@@ -1,3 +1,5 @@
+#include "Point2.hh"
+
 #include "geometry2.hh"
 
 void Point2::asSum(const Point2& a, const Vector2& b)

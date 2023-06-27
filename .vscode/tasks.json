@@ -11,6 +11,16 @@
 			"group": "build",
 			"problemMatcher": [],
 			"detail": "CMake build",
+			"dependsOn": [
+				"configure"
+			]
+		},
+		{
+			"type": "cmake",
+			"label": "Configure",
+			"command": "configure",
+			"problemMatcher": [],
+			"detail": "CMake configure"
 		}
 	]
 }

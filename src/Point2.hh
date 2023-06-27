@@ -11,7 +11,9 @@ private:
     float rawZ;
     friend class Vector2;
     friend class Matrix2;
+
 public:
+    Point2() : rawX(), rawY(), rawZ(1.0f) {}
     Point2(float x, float y) : rawX(x), rawY(y), rawZ(1.0f) {}
 
     float x() const
@@ -23,13 +25,13 @@ public:
         return rawY / rawZ;
     }
 
-    void asSum(const Point2& a, const Vector2& b);
-    void asSum(const Point2& a, const Point2& b)
+    void asSum(const Point2 &a, const Vector2 &b);
+    void asSum(const Point2 &a, const Point2 &b)
     {
         rawX = a.rawX + b.rawX;
         rawY = a.rawY + b.rawY;
         rawZ = a.rawZ + b.rawZ;
     }
-    void asDifference(const Point2& a, const Vector2& b);
-    void asProduct(const Matrix2& a, const Point2& b);
+    void asDifference(const Point2 &a, const Vector2 &b);
+    void asProduct(const Matrix2 &a, const Point2 &b);
 };

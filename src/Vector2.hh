@@ -12,6 +12,7 @@ private:
     friend class Point2;
     friend class Matrix2;
 public:
+    Vector2() = default;
     Vector2(float x, float y) : rawX(x), rawY(y), rawZ(0.0f) {}
 
     float x() const
