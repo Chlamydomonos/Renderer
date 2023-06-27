@@ -25,26 +25,28 @@ public:
         return rawY / rawZ;
     }
 
-    void asSum(const Point2 &a, const Vector2 &b);
-    void asSum(const Point2 &a, const Point2 &b)
+    Point2 &asSum(const Point2 &a, const Vector2 &b);
+    Point2 &asSum(const Point2 &a, const Point2 &b)
     {
         rawX = a.rawX + b.rawX;
         rawY = a.rawY + b.rawY;
         rawZ = a.rawZ + b.rawZ;
+        return *this;
     }
-    void asDifference(const Point2 &a, const Vector2 &b);
+    Point2 &asDifference(const Point2 &a, const Vector2 &b);
 
     /**
      * @note 此函数的参数不能是this
      */
-    void asProduct(const Matrix2 &a, const Point2 &b);
+    Point2 &asProduct(const Matrix2 &a, const Point2 &b);
 
-    void copy(const Point2 &a)
+    Point2 &copy(const Point2 &a)
     {
         rawX = a.rawX;
         rawY = a.rawY;
         rawZ = a.rawZ;
+        return *this;
     }
 
-    void copy(const Vector2 &a);
+    Point2 &copy(const Vector2 &a);
 };

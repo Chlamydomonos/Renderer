@@ -28,5 +28,5 @@ public:
         return rawZ / rawW;
     }
 
-    void asProduct(const Matrix3& a, const Point3& b);
+    Point3 &asProduct(const Matrix3& a, const Point3& b);
 };
