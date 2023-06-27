@@ -1,6 +1,7 @@
 #pragma once
 
 #include "windows.hh"
+#include "geometry2.hh"
 
 class Renderer
 {
@@ -11,4 +12,6 @@ private:
 public:
     static Renderer INSTANCE;
     void render(PaintDevice canvas);
+    void renderPoint(Point2 point, PaintDevice canvas);
+    void renderPoints(Point2* points, int count, PaintDevice canvas);
 };
