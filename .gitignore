@@ -1,2 +1,7 @@
 build/
 local/
+out/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+.vs/
