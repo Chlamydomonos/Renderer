@@ -12,6 +12,8 @@ class Model
 private:
     std::vector<Vertex> vertices;
     std::vector<Triangle> triangles;
+
+    void fillTriangle(const Triangle &triangle, const Camera &camera, Color color);
 public:
     Model() = default;
     Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles) : vertices(vertices), triangles(triangles) {}
@@ -66,5 +68,6 @@ public:
         }
     }
 
-    void renderAsWireframe(const Camera &camera, PaintDevice canvas, Color color = 0xffffff);
+    void renderAsWireframe(const Camera &camera, Color color = 0xffffff);
+    void simpleRender(const Camera &camera, Color wireFrameColor = 0xffffff, Color fillColor = 0xff0000);
 };

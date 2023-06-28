@@ -17,8 +17,8 @@ private:
     float r;
     float b;
     float t;
-    float n = 0.1f;
-    float f = 100.0f;
+    float n = -0.1f;
+    float f = -100.0f;
 
     void calculateLRBT()
     {
@@ -27,8 +27,8 @@ private:
 
         t = n * tan(fovY / 2.0f);
         b = -t;
-        r = t * width / height;
-        l = -r;
+        l = t * width / height;
+        r = -l;
     }
 
     void calculateWorldToView()
@@ -55,7 +55,8 @@ private:
         p2.orthographic(l, r, b, t, n, f);
 
         Matrix3 p3;
-        p3.scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 1.0f).thenTranslate(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 0.0f);
+        //p3.scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 1.0f).thenTranslate(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, -1.0f);
+        p3.identity();
 
         Matrix3 temp;
         temp.asProduct(p3, p2);
