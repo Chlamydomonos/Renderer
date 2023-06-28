@@ -9,25 +9,29 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
         return;
     }
 
-    auto yStart = static_cast<int>(s0.y()) + 1;
+    auto yStart = static_cast<int>(s0.y());
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s0.x();
     auto dy0 = s2.y() - s0.y();
+    auto dz0 = s2.z() - s0.z();
     auto dx1 = s2.x() - s1.x();
     auto dy1 = s2.y() - s1.y();
-    auto k0 = dx0 / dy0;
-    auto k1 = dx1 / dy1;
+    auto dz1 = s2.z() - s1.z();
 
-    for(int y = yStart; y < yEnd; y++)
+    for(int y = yStart + 1; y < yEnd; y++)
     {
-        auto x0 = static_cast<int>(s0.x() + k0 * (y - s0.y()));
-        auto x1 = static_cast<int>(s1.x() + k1 * (y - s1.y()));
-        auto xStart = min(x0, x1) + 1;
-        auto xEnd = max(x0, x1);
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s1.y()) * dx1 / dy1 + s1.x());
+        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
+        auto z1 = (y - s1.y()) * dz1 / dy1 + s1.z();
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+        auto zStart = z1 < z0 ? z0 : z1;
+        auto zEnd = z1 < z0 ? z1 : z0;
 
-        for(int x = xStart; x < xEnd; x++)
+        for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = (y - s0.y()) / dy0 * (s2.z() - s0.z()) + s0.z();
+            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -35,25 +39,29 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
 
 static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
 {
-    auto yStart = static_cast<int>(s0.y()) + 1;
+    auto yStart = static_cast<int>(s0.y());
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
+    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto k0 = dx0 / dy0;
-    auto k1 = dx1 / dy1;
+    auto dz1 = s2.z() - s0.z();
 
-    for(int y = yStart; y < yEnd; y++)
+    for(int y = yStart + 1; y < yEnd; y++)
     {
-        auto x0 = static_cast<int>(s0.x() + k0 * (y - s0.y()));
-        auto x1 = static_cast<int>(s0.x() + k1 * (y - s0.y()));
-        auto xStart = min(x0, x1) + 1;
-        auto xEnd = max(x0, x1);
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
+        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+        auto zStart = z1 < z0 ? z0 : z1;
+        auto zEnd = z1 < z0 ? z1 : z0;
 
-        for(int x = xStart; x < xEnd; x++)
+        for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = (y - s0.y()) / dy0 * (s1.z() - s0.z()) + s0.z();
+            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -61,25 +69,29 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
 
 static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
 {
-    auto yStart = static_cast<int>(s0.y()) + 1;
+    auto yStart = static_cast<int>(s0.y());
     auto yEnd = static_cast<int>(s1.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
+    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto k0 = dx0 / dy0;
-    auto k1 = dx1 / dy1;
+    auto dz1 = s2.z() - s0.z();
 
-    for(int y = yStart; y <= yEnd; y++)
+    for(int y = yStart + 1; y <= yEnd; y++)
     {
-        auto x0 = static_cast<int>(s0.x() + k0 * (y - s0.y()));
-        auto x1 = static_cast<int>(s0.x() + k1 * (y - s0.y()));
-        auto xStart = min(x0, x1) + 1;
-        auto xEnd = max(x0, x1);
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
+        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+        auto zStart = z1 < z0 ? z0 : z1;
+        auto zEnd = z1 < z0 ? z1 : z0;
 
-        for(int x = xStart; x < xEnd; x++)
+        for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = (y - s0.y()) / dy0 * (s1.z() - s0.z()) + s0.z();
+            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -91,21 +103,25 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s1.x();
     auto dy0 = s2.y() - s1.y();
+    auto dz0 = s2.z() - s1.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto k0 = dx0 / dy0;
-    auto k1 = dx1 / dy1;
+    auto dz1 = s2.z() - s0.z();
 
-    for(int y = yStart; y < yEnd; y++)
+    for(int y = yStart + 1; y < yEnd; y++)
     {
-        auto x0 = static_cast<int>(s1.x() + k0 * (y - s1.y()));
-        auto x1 = static_cast<int>(s0.x() + k1 * (y - s0.y()));
-        auto xStart = min(x0, x1) + 1;
-        auto xEnd = max(x0, x1);
+        auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto z0 = (y - s1.y()) * dz0 / dy0 + s1.z();
+        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+        auto zStart = z1 < z0 ? z0 : z1;
+        auto zEnd = z1 < z0 ? z1 : z0;
 
-        for(int x = xStart; x < xEnd; x++)
+        for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = (y - s1.y()) / dy0 * (s2.z() - s1.z()) + s1.z();
+            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -125,17 +141,17 @@ void Model::fillTriangle(const Triangle &triangle, const Camera &camera, Color c
     temp.asProduct(camera.getWorldToView(), p2);
     s2.asProduct(camera.getViewToScreen(), temp);
 
-    if (s0.y() > s1.y())
+    if(s0.y() > s1.y())
     {
         std::swap(s0, s1);
     }
-    if (s1.y() > s2.y())
+    if(s0.y() > s2.y())
+    {
+        std::swap(s0, s2);
+    }
+    if(s1.y() > s2.y())
     {
         std::swap(s1, s2);
-    }
-    if (s0.y() > s1.y())
-    {
-        std::swap(s0, s1);
     }
 
     if(static_cast<int>(s0.y()) == static_cast<int>(s1.y()))

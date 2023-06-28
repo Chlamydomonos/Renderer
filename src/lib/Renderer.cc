@@ -103,10 +103,11 @@ void Renderer::render(PaintDevice canvas)
     camera.setPos(Point3(0.0f, 2.0f, 0.0f));
     camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
     camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
-    //cube.simpleRender(camera);
+    cube.simpleRender(camera);
     //simpleTwoTriangles.simpleRender(camera);
-    simpleTriangle1.simpleRender(camera, WHITE, BLUE);
-    simpleTriangle2.simpleRender(camera, RED, GREEN);
+    //simpleTriangle2.simpleRender(camera, RED, GREEN);
+    //simpleTriangle1.simpleRender(camera, WHITE, BLUE);
+
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)
@@ -139,12 +140,12 @@ void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, 
     static Point3 screenSpacePoint;
     cameraSpacePoint.asProduct(camera.getWorldToView(), point0);
     screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
-    auto x0 = static_cast<int>(screenSpacePoint.x());
-    auto y0 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
+    auto x0 = screenSpacePoint.x();
+    auto y0 = WINDOW_HEIGHT - screenSpacePoint.y();
     cameraSpacePoint.asProduct(camera.getWorldToView(), point1);
     screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
-    auto x1 = static_cast<int>(screenSpacePoint.x());
-    auto y1 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
+    auto x1 = screenSpacePoint.x();
+    auto y1 = WINDOW_HEIGHT - screenSpacePoint.y();
 
     auto dx = x1 - x0;
     auto dy = y1 - y0;
