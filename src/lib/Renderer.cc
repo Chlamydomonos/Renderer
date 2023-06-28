@@ -44,82 +44,24 @@ static Model cube(
     }
 );
 
-static void generateRandomPoints(Point3 *points, int count, float centerX, float centerY, float centerZ, float radius)
-{
-    for (auto point = points; point != points + count; ++point)
-    {
-        auto theta = rand() * 2.0f * 3.1415926 / RAND_MAX;
-        auto phi = rand() * 2.0f * 3.1415926 / RAND_MAX;
-        auto sinTheta = sinf(theta);
-        auto cosTheta = cosf(theta);
-        auto sinPhi = sinf(phi);
-        auto cosPhi = cosf(phi);
-        auto x = centerX + radius * sinTheta * cosPhi;
-        auto y = centerY + radius * sinTheta * sinPhi;
-        auto z = centerZ + radius * cosTheta;
-        point->copy(Point3(x, y, z));
-    }
-}
-
 void Renderer::render(PaintDevice canvas)
 {
-    Camera camera;
+    resetZBuffer();
     this->canvas = canvas;
-    static float camaraY;
-    if(camaraY > 1.0f)
+    Camera camera;
+    static float temp;
+    if(temp > PI / 4.0f)
     {
-        camaraY = -1.0f;
+        temp = -PI / 4.0f;
     }
     else
     {
-        camaraY += 0.01f;
+        temp += 0.01f;
     }
-    camera.setPos(Point3(-1.0f, camaraY, 0.0f));
-    camera.setDir(Vector3(0.0f, 0.0f, 1.0f));
-    camera.setUp(Vector3(0.0f, 1.0f, 0.0f));
-    auto points = new Point3[600];
-    generateRandomPoints(points, 100, 0.0f, 0.0f, 10.0f, 0.1f);
-    for(auto point = points; point != points + 100; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, WHITE);
-    }
-    generateRandomPoints(points + 100, 100, -1.0f, 0.0f, 11.0f, 0.1f);
-    for(auto point = points + 100; point != points + 200; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, RED);
-    }
-    generateRandomPoints(points + 200, 100, 1.0f, 0.0f, 11.0f, 0.1f);
-    for(auto point = points + 200; point != points + 300; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, GREEN);
-    }
-    generateRandomPoints(points + 300, 100, 0.0f, 1.0f, 11.0f, 0.1f);
-    for(auto point = points + 300; point != points + 400; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, BLUE);
-    }
-    generateRandomPoints(points + 400, 100, 0.0f, -1.0f, 11.0f, 0.1f);
-    for(auto point = points + 400; point != points + 500; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, YELLOW);
-    }
-    generateRandomPoints(points + 500, 100, 0.0f, 0.0f, 12.0f, 0.1f);
-    for(auto point = points + 500; point != points + 600; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, CYAN);
-    }
-    // Point3 point0(0.0f, 0.0f, 10.0f);
-    // renderWorldSpacePoint(point0, camera);
-    // Point3 point1(-1.0f, 0.0f, 11.0f);
-    // renderWorldSpacePoint(point1, camera);
-    // Point3 point2(1.0f, 0.0f, 11.0f);
-    // renderWorldSpacePoint(point2, camera);
-    // Point3 point3(0.0f, 1.0f, 11.0f);
-    // renderWorldSpacePoint(point3, camera);
-    // Point3 point4(0.0f, -1.0f, 11.0f);
-    // renderWorldSpacePoint(point4, camera);
-    // Point3 point5(0.0f, 0.0f, 12.0f);
-    // renderWorldSpacePoint(point5, camera);
+    camera.setPos(Point3(0.0f, 2.0f, 0.0f));
+    camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
+    camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
+    cube.simpleRender(camera);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)
