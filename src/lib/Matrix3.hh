@@ -368,7 +368,7 @@ public:
      */
     Matrix3 &orthographic(float l, float r, float b, float t, float n, float f)
     {
-        return translate(-(r + l) / 2.0f, -(t + b) / 2.0f, -(f + n) / 2.0f)
-            .thenScale(2.0f / (r - l), 2.0f / (t - b), 2.0f / (f - n));
+        return translate(-(l + r) / 2.0f, -(t + b) / 2.0f, -(n + f) / 2.0f)
+            .thenScale(2.0f / (l - r), 2.0f / (t - b), 2.0f / (n - f));
     }
 };

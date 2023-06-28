@@ -25,7 +25,7 @@ private:
         float height = WINDOW_HEIGHT;
         float width = WINDOW_WIDTH;
 
-        t = n * tan(fovY / 2.0f);
+        t = -n * tan(fovY / 2.0f);
         b = -t;
         l = t * width / height;
         r = -l;
@@ -55,8 +55,7 @@ private:
         p2.orthographic(l, r, b, t, n, f);
 
         Matrix3 p3;
-        //p3.scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 1.0f).thenTranslate(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, -1.0f);
-        p3.identity();
+        p3.scale(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 1.0f).thenTranslate(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 1.0f);
 
         Matrix3 temp;
         temp.asProduct(p3, p2);
