@@ -30,4 +30,6 @@ public:
     void onDestroy(Window window);
     void onClose(Window window);
     void onTimer(Window window);
+    void onKeyDown(Window window, Key key);
+    void onKeyUp(Window window, Key key);
 };

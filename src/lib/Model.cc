@@ -167,9 +167,9 @@ void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillC
 {
     for (Triangle &triangle : triangles)
     {
+        fillTriangle(triangle, camera, fillColor);
         Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, wireFrameColor);
         Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, wireFrameColor);
         Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, wireFrameColor);
-        fillTriangle(triangle, camera, fillColor);
     }
 }

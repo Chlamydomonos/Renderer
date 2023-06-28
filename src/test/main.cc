@@ -7,13 +7,16 @@ constexpr float PI = 3.14159265358979323846f;
 
 int main()
 {
-    Point3 p1(0.0f, 0.0f, 9.0f);
-    Point3 p2(-1.0f, 0.0f, 10.0f);
-    Point3 p3(1.0f, 0.0f, 10.0f);
-    Point3 p4(0.0f, -1.0f, 10.0f);
-    Point3 p5(0.0f, 1.0f, 10.0f);
-    Point3 p6(0.0f, 0.0f, 11.0f);
+    Point3 p1(-1.0f, -1.0f, 9.0f);
+    Point3 p2(1.0f, -1.0f, 9.0f);
+    Point3 p3(-1.0f, -1.0f, 9.2f);
+    Point3 p4(1.0f, -1.0f, 9.2f);
+    Point3 p5(-1.0f, -0.8f, 9.0f);
+    Point3 p6(1.0f, -0.8f, 9.0f);
     Camera camera;
+    camera.setPos(Point3(0.0f, 2.0f, 0.0f));
+    camera.setDir(Vector3(sin(0.3), sin(-PI / 12.0f), cos(0.3)));
+    camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
     Point3 c1, c2, c3, c4, c5, c6, s1, s2, s3, s4, s5, s6;
     c1.asProduct(camera.getWorldToView(), p1);
     s1.asProduct(camera.getViewToScreen(), c1);

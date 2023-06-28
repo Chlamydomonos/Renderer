@@ -7,6 +7,7 @@ using PaintDevice = HDC;
 using Instance = HINSTANCE;
 using Bitmap = HBITMAP;
 using Color = COLORREF;
+using Key = WPARAM;
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 768

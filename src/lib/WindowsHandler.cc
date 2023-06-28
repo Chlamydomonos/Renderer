@@ -1,5 +1,7 @@
 #include "WindowsHandler.hh"
+
 #include "Renderer.hh"
+#include "Controller.hh"
 
 #include <cstdio>
 
@@ -69,4 +71,30 @@ void WindowsHandler::onTimer(Window window)
 {
     RECT rect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
 	InvalidateRect(window, &rect, TRUE);
+}
+
+void WindowsHandler::onKeyDown(Window window, Key key)
+{
+    ScopedLock lock(renderMutex);
+    if(key == VK_SPACE)
+    {
+        Controller::INSTANCE.onSpaceDown();
+    }
+    else if(key == 'W')
+    {
+        Controller::INSTANCE.onWDown();
+    }
+}
+
+void WindowsHandler::onKeyUp(Window window, Key key)
+{
+    ScopedLock lock(renderMutex);
+    if(key == VK_SPACE)
+    {
+        Controller::INSTANCE.onSpaceUp();
+    }
+    else if(key == 'W')
+    {
+        Controller::INSTANCE.onWUp();
+    }
 }

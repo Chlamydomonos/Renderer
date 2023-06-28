@@ -1,6 +1,7 @@
 #include "Renderer.hh"
 
 #include "Model.hh"
+#include "Controller.hh"
 
 #include <wingdi.h>
 #include <algorithm>
@@ -44,24 +45,68 @@ static Model cube(
     }
 );
 
+static Model simpleTwoTriangles(
+    {
+        Vertex(-1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, 1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 11.0f),
+    },
+    {
+        Triangle(0, 1, 2),
+        Triangle(0, 1, 3),
+    }
+);
+
+static Model simpleTriangle1(
+    {
+        Vertex(-1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, 1.0f, 9.0f),
+    },
+    {
+        Triangle(0, 1, 2)
+    }
+);
+
+static Model simpleTriangle2(
+    {
+        Vertex(-1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 11.0f),
+    },
+    {
+        Triangle(0, 1, 2)
+    }
+);
+
 void Renderer::render(PaintDevice canvas)
 {
     resetZBuffer();
     this->canvas = canvas;
     Camera camera;
     static float temp;
+    static bool paused;
+    if(Controller::INSTANCE.tryGetSpaceSignal())
+    {
+        paused = !paused;
+    }
+
     if(temp > PI / 4.0f)
     {
         temp = -PI / 4.0f;
     }
-    else
+    else if(!paused || Controller::INSTANCE.tryGetWSignal())
     {
         temp += 0.01f;
     }
     camera.setPos(Point3(0.0f, 2.0f, 0.0f));
     camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
     camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
-    cube.simpleRender(camera);
+    //cube.simpleRender(camera);
+    //simpleTwoTriangles.simpleRender(camera);
+    simpleTriangle1.simpleRender(camera, WHITE, BLUE);
+    simpleTriangle2.simpleRender(camera, RED, GREEN);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)

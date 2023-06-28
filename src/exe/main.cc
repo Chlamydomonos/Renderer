@@ -74,6 +74,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_TIMER:
         WindowsHandler::INSTANCE.onTimer(hwnd);
         return 0;
+    case WM_KEYDOWN:
+        WindowsHandler::INSTANCE.onKeyDown(hwnd, wParam);
+        return 0;
+    case WM_KEYUP:
+        WindowsHandler::INSTANCE.onKeyUp(hwnd, wParam);
+        return 0;
     }
 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
