@@ -356,7 +356,7 @@ public:
     Matrix3 &perspective(float n, float f)
     {
         data[0][0] = n;
-        data[1][1] = n;
+        data[1][1] = -n;
         data[2][2] = f + n;
         data[2][3] = -f * n;
         data[3][2] = 1.0f;

@@ -13,4 +13,9 @@ public:
     {
         return pos;
     }
+
+    const Point3 &getPos() const
+    {
+        return pos;
+    }
 };

@@ -14,8 +14,8 @@ private:
 public:
     static Renderer INSTANCE;
     void render(PaintDevice canvas);
-    void render2dPoint(const Point2 &point, PaintDevice canvas);
-    void render2dPoints(const Point2 *points, int count, PaintDevice canvas);
-    void renderScreenSpacePoint(const Point3 &point, PaintDevice canvas);
-    void renderWorldSpacePoint(const Point3 &point, const Camera &camera, PaintDevice canvas);
+    void render2dPoint(const Point2 &point, PaintDevice canvas, Color color = 0xffffff);
+    void renderScreenSpacePoint(const Point3 &point, PaintDevice canvas, Color color = 0xffffff);
+    void renderWorldSpacePoint(const Point3 &point, const Camera &camera, PaintDevice canvas, Color color = 0xffffff);
+    void renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, PaintDevice canvas, Color color = 0xffffff);
 };

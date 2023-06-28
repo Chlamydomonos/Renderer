@@ -3,12 +3,16 @@
 class Triangle
 {
 private:
+    int v0;
     int v1;
     int v2;
-    int v3;
 public:
     Triangle() = default;
-    Triangle(int v1, int v2, int v3) : v1(v1), v2(v2), v3(v3) {}
+    Triangle(int v0, int v1, int v2) : v0(v0), v1(v1), v2(v2) {}
+    int getV0() const
+    {
+        return v0;
+    }
     int getV1() const
     {
         return v1;
@@ -16,9 +20,5 @@ public:
     int getV2() const
     {
         return v2;
-    }
-    int getV3() const
-    {
-        return v3;
     }
 };

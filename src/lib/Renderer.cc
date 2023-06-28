@@ -1,110 +1,80 @@
 #include "Renderer.hh"
 
-#include <wingdi.h>
+#include "Model.hh"
 
-constexpr COLORREF WHITE = RGB(0xff, 0xff, 0xff);
+#include <wingdi.h>
+#include <algorithm>
+
+constexpr Color WHITE = RGB(0xff, 0xff, 0xff);
+constexpr Color RED = RGB(0xff, 0x00, 0x00);
+constexpr Color GREEN = RGB(0x00, 0xff, 0x00);
+constexpr Color BLUE = RGB(0x00, 0x00, 0xff);
+constexpr Color YELLOW = RGB(0xff, 0xff, 0x00);
+constexpr Color CYAN = RGB(0x00, 0xff, 0xff);
+constexpr Color MAGENTA = RGB(0xff, 0x00, 0xff);
+
+constexpr float PI = 3.14159265358979323846f;
 
 Renderer Renderer::INSTANCE;
 
-static void generateRandomPoints(Point3 *points, int count, float centerX, float centerY, float centerZ, float radius)
-{
-    for (auto point = points; point != points + count; ++point)
+static Model model(
     {
-        auto theta = rand() * 2.0f * 3.1415926 / RAND_MAX;
-        auto phi = rand() * 2.0f * 3.1415926 / RAND_MAX;
-        auto sinTheta = sinf(theta);
-        auto cosTheta = cosf(theta);
-        auto sinPhi = sinf(phi);
-        auto cosPhi = cosf(phi);
-        auto x = centerX + radius * sinTheta * cosPhi;
-        auto y = centerY + radius * sinTheta * sinPhi;
-        auto z = centerZ + radius * cosTheta;
-        point->copy(Point3(x, y, z));
+        Vertex(-1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 9.0f),
+        Vertex(1.0f, -1.0f, 11.0f),
+        Vertex(-1.0f, -1.0f, 11.0f),
+        Vertex(-1.0f, 1.0f, 9.0f),
+        Vertex(1.0f, 1.0f, 9.0f),
+        Vertex(1.0f, 1.0f, 11.0f),
+        Vertex(-1.0f, 1.0f, 11.0f),
+    },
+    {
+        Triangle(0, 1, 2),
+        Triangle(0, 2, 3),
+        Triangle(4, 6, 5),
+        Triangle(4, 7, 6),
+        Triangle(0, 4, 5),
+        Triangle(0, 5, 1),
+        Triangle(1, 5, 6),
+        Triangle(1, 6, 2),
+        Triangle(2, 6, 7),
+        Triangle(2, 7, 3),
+        Triangle(3, 7, 4),
+        Triangle(3, 4, 0),
     }
-}
+);
 
 void Renderer::render(PaintDevice canvas)
 {
     Camera camera;
-    static float camaraY;
-    if(camaraY > 1.0f)
+    static float temp;
+    if(temp > PI / 4.0f)
     {
-        camaraY = -1.0f;
+        temp = -PI / 4.0f;
     }
     else
     {
-        camaraY += 0.01f;
+        temp += 0.01f;
     }
-    camera.setPos(Point3(-1.0f, camaraY, 0.0f));
-    camera.setDir(Vector3(0.0f, 0.0f, 1.0f));
-    camera.setUp(Vector3(0.0f, 1.0f, 0.0f));
-    auto points = new Point3[600];
-    generateRandomPoints(points, 100, 0.0f, 0.0f, 10.0f, 0.1f);
-    for(auto point = points; point != points + 100; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    generateRandomPoints(points + 100, 100, -1.0f, 0.0f, 11.0f, 0.1f);
-    for(auto point = points + 100; point != points + 200; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    generateRandomPoints(points + 200, 100, 1.0f, 0.0f, 11.0f, 0.1f);
-    for(auto point = points + 200; point != points + 300; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    generateRandomPoints(points + 300, 100, 0.0f, 1.0f, 11.0f, 0.1f);
-    for(auto point = points + 300; point != points + 400; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    generateRandomPoints(points + 400, 100, 0.0f, -1.0f, 11.0f, 0.1f);
-    for(auto point = points + 400; point != points + 500; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    generateRandomPoints(points + 500, 100, 0.0f, 0.0f, 12.0f, 0.1f);
-    for(auto point = points + 500; point != points + 600; ++point)
-    {
-        renderWorldSpacePoint(*point, camera, canvas);
-    }
-    // Point3 point0(0.0f, 0.0f, 10.0f);
-    // renderWorldSpacePoint(point0, camera, canvas);
-    // Point3 point1(-1.0f, 0.0f, 11.0f);
-    // renderWorldSpacePoint(point1, camera, canvas);
-    // Point3 point2(1.0f, 0.0f, 11.0f);
-    // renderWorldSpacePoint(point2, camera, canvas);
-    // Point3 point3(0.0f, 1.0f, 11.0f);
-    // renderWorldSpacePoint(point3, camera, canvas);
-    // Point3 point4(0.0f, -1.0f, 11.0f);
-    // renderWorldSpacePoint(point4, camera, canvas);
-    // Point3 point5(0.0f, 0.0f, 12.0f);
-    // renderWorldSpacePoint(point5, camera, canvas);
+    camera.setPos(Point3(0.0f, 2.0f, 0.0f));
+    camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
+    camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
+    model.renderAsWireframe(camera, canvas);
 }
 
-void Renderer::render2dPoint(const Point2 &point, PaintDevice canvas)
+void Renderer::render2dPoint(const Point2 &point, PaintDevice canvas, Color color)
 {
-    SetPixel(canvas, point.x(), WINDOW_HEIGHT - point.y(), WHITE);
+    SetPixel(canvas, point.x(), WINDOW_HEIGHT - point.y(), color);
 }
 
-void Renderer::render2dPoints(const Point2 *points, int count, PaintDevice canvas)
-{
-    auto pointsEnd = points + count;
-    for (auto point = points; point != pointsEnd; ++point)
-    {
-        SetPixel(canvas, point->x(), WINDOW_HEIGHT - point->y(), WHITE);
-    }
-}
-
-void Renderer::renderScreenSpacePoint(const Point3 &point, PaintDevice canvas)
+void Renderer::renderScreenSpacePoint(const Point3 &point, PaintDevice canvas, Color color)
 {
     auto x = point.x();
     auto y = WINDOW_HEIGHT - point.y();
-    SetPixel(canvas, x, y, WHITE);
+    SetPixel(canvas, x, y, color);
 }
 
-void Renderer::renderWorldSpacePoint(const Point3 &point, const Camera &camera, PaintDevice canvas)
+void Renderer::renderWorldSpacePoint(const Point3 &point, const Camera &camera, PaintDevice canvas, Color color)
 {
     static Point3 cameraSpacePoint;
     static Point3 screenSpacePoint;
@@ -113,5 +83,30 @@ void Renderer::renderWorldSpacePoint(const Point3 &point, const Camera &camera, 
 
     auto x = screenSpacePoint.x();
     auto y = WINDOW_HEIGHT - screenSpacePoint.y();
-    SetPixel(canvas, x, y, WHITE);
+    SetPixel(canvas, x, y, color);
+}
+
+void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, PaintDevice canvas, Color color)
+{
+    static Point3 cameraSpacePoint;
+    static Point3 screenSpacePoint;
+    cameraSpacePoint.asProduct(camera.getWorldToView(), point0);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    auto x0 = static_cast<int>(screenSpacePoint.x());
+    auto y0 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
+    cameraSpacePoint.asProduct(camera.getWorldToView(), point1);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    auto x1 = static_cast<int>(screenSpacePoint.x());
+    auto y1 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
+
+    auto dx = x1 - x0;
+    auto dy = y1 - y0;
+    auto steps = max(abs(dx), abs(dy));
+
+    for(auto i = 0; i <= steps; ++i)
+    {
+        auto x = x0 + i * dx / steps;
+        auto y = y0 + i * dy / steps;
+        SetPixel(canvas, x, y, color);
+    }
 }
