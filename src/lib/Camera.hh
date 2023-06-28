@@ -27,8 +27,8 @@ private:
 
         t = -n * tan(fovY / 2.0f);
         b = -t;
-        l = t * width / height;
-        r = -l;
+        r = t * width / height;
+        l = -r;
     }
 
     void calculateWorldToView()

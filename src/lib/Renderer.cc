@@ -123,7 +123,7 @@ void Renderer::renderScreenSpacePointWithZBuffer(const Point3 &point, Color colo
     }
 
     auto z = point.z();
-    if(z < zBuffer[x][y])
+    if(z > zBuffer[x][y])
     {
         SetPixel(canvas, x, y, color);
         zBuffer[x][y] = z;
@@ -144,7 +144,7 @@ void Renderer::renderWorldSpacePointWithZBuffer(const Point3 &point, const Camer
         return;
     }
     auto z = screenSpacePoint.z();
-    if(z < zBuffer[x][y])
+    if(z > zBuffer[x][y])
     {
         SetPixel(canvas, x, y, color);
         zBuffer[x][y] = z;
@@ -180,7 +180,7 @@ void Renderer::renderWorldSpaceLineWithZBuffer(const Point3 &point0, const Point
             continue;
         }
         auto z = z0 + i * dz / steps;
-        if(z < zBuffer[x][y])
+        if(z > zBuffer[x][y])
         {
             SetPixel(canvas, x, y, color);
             zBuffer[x][y] = z;
