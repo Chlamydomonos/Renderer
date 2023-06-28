@@ -71,6 +71,15 @@ public:
 
     Point3 &copy(const Vector3 &a);
 
+    Point3 &moveToPixelCenter()
+    {
+        rawX = static_cast<int>(x()) + 0.5f;
+        rawY = static_cast<int>(y()) + 0.5f;
+        rawZ = z();
+        rawW = 1.0f;
+        return *this;
+    }
+
     float operator*(const Point3 &a) const
     {
         return (rawX * a.rawX + rawY * a.rawY + rawZ * a.rawZ) / (rawW * a.rawW);

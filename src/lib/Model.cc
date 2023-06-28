@@ -2,7 +2,7 @@
 
 #include "Renderer.hh"
 
-static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
+static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s2, Color color)
 {
     if(static_cast<int>(s2.y()) == static_cast<int>(s1.y()))
     {
@@ -37,7 +37,7 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
     }
 }
 
-static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
+static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s2, Color color)
 {
     auto yStart = static_cast<int>(s0.y());
     auto yEnd = static_cast<int>(s2.y());
@@ -67,7 +67,7 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
     }
 }
 
-static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
+static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const Point3 &s2, Color color)
 {
     auto yStart = static_cast<int>(s0.y());
     auto yEnd = static_cast<int>(s1.y());
@@ -97,7 +97,7 @@ static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const 
     }
 }
 
-static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const Point3 &s2, const Camera &camera, Color color)
+static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const Point3 &s2, Color color)
 {
     auto yStart = static_cast<int>(s1.y());
     auto yEnd = static_cast<int>(s2.y());
@@ -127,19 +127,8 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
     }
 }
 
-void Model::fillTriangle(const Triangle &triangle, const Camera &camera, Color color)
+void Model::fillTriangle(Point3 &s0, Point3 &s1, Point3 &s2, Color color)
 {
-    auto p0 = getVertex(triangle, 0).getPos();
-    auto p1 = getVertex(triangle, 1).getPos();
-    auto p2 = getVertex(triangle, 2).getPos();
-    Point3 temp;
-    Point3 s0, s1, s2;
-    temp.asProduct(camera.getWorldToView(), p0);
-    s0.asProduct(camera.getViewToScreen(), temp);
-    temp.asProduct(camera.getWorldToView(), p1);
-    s1.asProduct(camera.getViewToScreen(), temp);
-    temp.asProduct(camera.getWorldToView(), p2);
-    s2.asProduct(camera.getViewToScreen(), temp);
 
     if(s0.y() > s1.y())
     {
@@ -156,16 +145,16 @@ void Model::fillTriangle(const Triangle &triangle, const Camera &camera, Color c
 
     if(static_cast<int>(s0.y()) == static_cast<int>(s1.y()))
     {
-        fillType1(s0, s1, s2, camera, color);
+        fillType1(s0, s1, s2, color);
     }
     else if(static_cast<int>(s1.y()) == static_cast<int>(s2.y()))
     {
-        fillType2(s0, s1, s2, camera, color);
+        fillType2(s0, s1, s2, color);
     }
     else
     {
-        fillType3LowerPart(s0, s1, s2, camera, color);
-        fillType3UpperPart(s0, s1, s2, camera, color);
+        fillType3LowerPart(s0, s1, s2, color);
+        fillType3UpperPart(s0, s1, s2, color);
     }
 }
 
@@ -179,13 +168,57 @@ void Model::renderAsWireframe(const Camera &camera, Color color)
     }
 }
 
+void Model::renderAswireframeWithoutBackface(const Camera &camera, Color color)
+{
+    for (Triangle &triangle : triangles)
+    {
+        const Point3 &p0 = getVertex(triangle, 0).getPos();
+        const Point3 &p1 = getVertex(triangle, 1).getPos();
+        const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 temp;
+        Point3 s0, s1, s2;
+        temp.asProduct(camera.getWorldToView(), p0);
+        s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        temp.asProduct(camera.getWorldToView(), p1);
+        s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        temp.asProduct(camera.getWorldToView(), p2);
+        s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+
+        if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
+        {
+            continue;
+        }
+
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, color);
+    }
+}
+
 void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillColor)
 {
     for (Triangle &triangle : triangles)
     {
-        fillTriangle(triangle, camera, fillColor);
-        Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, wireFrameColor);
-        Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, wireFrameColor);
-        Renderer::INSTANCE.renderWorldSpaceLineWithZBuffer(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, wireFrameColor);
+        const Point3 &p0 = getVertex(triangle, 0).getPos();
+        const Point3 &p1 = getVertex(triangle, 1).getPos();
+        const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 temp;
+        Point3 s0, s1, s2;
+        temp.asProduct(camera.getWorldToView(), p0);
+        s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        temp.asProduct(camera.getWorldToView(), p1);
+        s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        temp.asProduct(camera.getWorldToView(), p2);
+        s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+
+        if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
+        {
+            continue;
+        }
+
+        fillTriangle(s0, s1, s2, fillColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, wireFrameColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, wireFrameColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, wireFrameColor);
     }
 }

@@ -13,7 +13,7 @@ private:
     std::vector<Vertex> vertices;
     std::vector<Triangle> triangles;
 
-    void fillTriangle(const Triangle &triangle, const Camera &camera, Color color);
+    void fillTriangle(Point3 &s0, Point3 &s1, Point3 &s2, Color color);
 public:
     Model() = default;
     Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles) : vertices(vertices), triangles(triangles) {}
@@ -69,5 +69,6 @@ public:
     }
 
     void renderAsWireframe(const Camera &camera, Color color = 0xffffff);
+    void renderAswireframeWithoutBackface(const Camera &camera, Color color = 0xffffff);
     void simpleRender(const Camera &camera, Color wireFrameColor = 0xffffff, Color fillColor = 0xff0000);
 };

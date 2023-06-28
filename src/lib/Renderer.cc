@@ -202,12 +202,12 @@ void Renderer::renderWorldSpaceLineWithZBuffer(const Point3 &point0, const Point
     static Point3 cameraSpacePoint;
     static Point3 screenSpacePoint;
     cameraSpacePoint.asProduct(camera.getWorldToView(), point0);
-    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint).moveToPixelCenter();
     auto x0 = static_cast<int>(screenSpacePoint.x());
     auto y0 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
     auto z0 = screenSpacePoint.z();
     cameraSpacePoint.asProduct(camera.getWorldToView(), point1);
-    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint).moveToPixelCenter();
     auto x1 = static_cast<int>(screenSpacePoint.x());
     auto y1 = static_cast<int>(WINDOW_HEIGHT - screenSpacePoint.y());
     auto z1 = screenSpacePoint.z();
