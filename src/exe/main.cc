@@ -65,6 +65,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
         WindowsHandler::INSTANCE.onPaint(hwnd, hdc);
+        EndPaint(hwnd, &ps);
         return 0;
     }
     case WM_CLOSE:

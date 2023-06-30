@@ -222,3 +222,27 @@ void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillC
         Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, wireFrameColor);
     }
 }
+
+void Model::updateNormals()
+{
+    for (Triangle &triangle : triangles)
+    {
+        const Point3 &p0 = getVertex(triangle, 0).getPos();
+        const Point3 &p1 = getVertex(triangle, 1).getPos();
+        const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Vector3 v0(p1.x() - p0.x(), p1.y() - p0.y(), p1.z() - p0.z());
+        Vector3 v1(p2.x() - p0.x(), p2.y() - p0.y(), p2.z() - p0.z());
+        Vector3 normal;
+        normal.asProduct(v0, v1).normalize();
+        triangle.normal.copy(normal);
+
+        getVertex(triangle, 0).normal.asSum(getVertex(triangle, 0).normal, normal);
+        getVertex(triangle, 1).normal.asSum(getVertex(triangle, 1).normal, normal);
+        getVertex(triangle, 2).normal.asSum(getVertex(triangle, 2).normal, normal);
+    }
+
+    for (Vertex &vertex : vertices)
+    {
+        vertex.normal = vertex.normal.normalize();
+    }
+}

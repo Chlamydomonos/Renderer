@@ -14,6 +14,7 @@ private:
     std::vector<Triangle> triangles;
 
     void fillTriangle(Point3 &s0, Point3 &s1, Point3 &s2, Color color);
+    void updateNormals();
 public:
     Model() = default;
     Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles) : vertices(vertices), triangles(triangles) {}

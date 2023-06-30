@@ -1,11 +1,15 @@
 #pragma once
 
+#include "geometry3.hh"
+
 class Triangle
 {
 private:
     int v0;
     int v1;
     int v2;
+    Vector3 normal;
+    friend class Model;
 public:
     Triangle() = default;
     Triangle(int v0, int v1, int v2) : v0(v0), v1(v1), v2(v2) {}
