@@ -65,7 +65,7 @@ static Model simpleTriangle1(
         Vertex(1.0f, 1.0f, 9.0f),
     },
     {
-        Triangle(0, 1, 2)
+        Triangle(0, 2, 1)
     }
 );
 
@@ -84,6 +84,7 @@ void Renderer::render(PaintDevice canvas)
 {
     resetZBuffer();
     this->canvas = canvas;
+
     Camera camera;
     static float temp;
     static bool paused;
@@ -103,11 +104,12 @@ void Renderer::render(PaintDevice canvas)
     camera.setPos(Point3(0.0f, 2.0f, 0.0f));
     camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
     camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
-    cube.simpleRender(camera);
-    //simpleTwoTriangles.simpleRender(camera);
-    //simpleTriangle2.simpleRender(camera, RED, GREEN);
-    //simpleTriangle1.simpleRender(camera, WHITE, BLUE);
 
+    Material material;
+    Light light;
+
+    cube.renderWithMaterial(camera, material, light);
+    //simpleTriangle1.renderWithMaterial(camera, material, light);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)
@@ -156,6 +158,36 @@ void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, 
         auto x = x0 + i * dx / steps;
         auto y = y0 + i * dy / steps;
         SetPixel(canvas, x, y, color);
+    }
+}
+
+void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, const VertexColor &color0, const VertexColor &color1)
+{
+    static Point3 cameraSpacePoint;
+    static Point3 screenSpacePoint;
+    cameraSpacePoint.asProduct(camera.getWorldToView(), point0);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    auto x0 = screenSpacePoint.x();
+    auto y0 = WINDOW_HEIGHT - screenSpacePoint.y();
+    cameraSpacePoint.asProduct(camera.getWorldToView(), point1);
+    screenSpacePoint.asProduct(camera.getViewToScreen(), cameraSpacePoint);
+    auto x1 = screenSpacePoint.x();
+    auto y1 = WINDOW_HEIGHT - screenSpacePoint.y();
+
+    auto dx = x1 - x0;
+    auto dy = y1 - y0;
+    auto steps = max(abs(dx), abs(dy));
+
+    for(auto i = 0; i <= steps; ++i)
+    {
+        auto x = x0 + i * dx / steps;
+        auto y = y0 + i * dy / steps;
+        auto t = static_cast<float>(i) / steps;
+        VertexColor c0, c1;
+        c0.asProduct(color0, 1.0f - t);
+        c1.asProduct(color1, t);
+        c0.asSum(c0, c1);
+        SetPixel(canvas, x, y, c0.toColor());
     }
 }
 

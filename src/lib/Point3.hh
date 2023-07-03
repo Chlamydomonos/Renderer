@@ -84,4 +84,19 @@ public:
     {
         return (rawX * a.rawX + rawY * a.rawY + rawZ * a.rawZ) / (rawW * a.rawW);
     }
+
+    Point3 &asBarycentric(const Point3 &a, const Point3 &b, const Point3 &c, const Point3 &self)
+    {
+        auto gamma = (a.y() - b.y()) * self.x() + (b.x() - a.x()) * self.y() + a.x() * b.y() - b.x() * a.y();
+        gamma /= (a.y() - b.y()) * c.x() + (b.x() - a.x()) * c.y() + a.x() * b.y() - b.x() * a.y();
+
+        auto beta = (a.y() - c.y()) * self.x() + (c.x() - a.x()) * self.y() + a.x() * c.y() - c.x() * a.y();
+        beta /= (a.y() - c.y()) * b.x() + (c.x() - a.x()) * b.y() + a.x() * c.y() - c.x() * a.y();
+
+        rawX = 1.0f - beta - gamma;
+        rawY = beta;
+        rawZ = gamma;
+        rawW = 1.0f;
+        return *this;
+    }
 };

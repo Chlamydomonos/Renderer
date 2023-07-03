@@ -46,6 +46,8 @@ public:
         return *this;
     }
 
+    Vector3 &asDifference(const Point3 &a, const Point3 &b);
+
     /**
      * @note 此函数的参数不能是this
      */

@@ -4,6 +4,7 @@
 #include "geometry2.hh"
 #include "geometry3.hh"
 #include "Camera.hh"
+#include "VertexColor.hh"
 
 #include <xutility>
 
@@ -26,6 +27,7 @@ public:
     void renderScreenSpacePoint(const Point3 &point, Color color = 0xffffff);
     void renderWorldSpacePoint(const Point3 &point, const Camera &camera, Color color = 0xffffff);
     void renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, Color color = 0xffffff);
+    void renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, const VertexColor &color0, const VertexColor &color1);
     void renderScreenSpacePointWithZBuffer(const Point3 &point, Color color = 0xffffff);
     void renderWorldSpacePointWithZBuffer(const Point3 &point, const Camera &camera, Color color = 0xffffff);
     void renderWorldSpaceLineWithZBuffer(const Point3 &point0, const Point3 &point1, const Camera &camera, Color color = 0xffffff);

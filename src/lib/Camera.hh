@@ -78,6 +78,21 @@ public:
         calculateViewToScreen();
     }
 
+    const Point3 &getPos() const
+    {
+        return pos;
+    }
+
+    const Vector3 &getDir() const
+    {
+        return dir;
+    }
+
+    const Vector3 &getUp() const
+    {
+        return up;
+    }
+
     void setPos(const Point3 &pos)
     {
         this->pos.copy(pos);
