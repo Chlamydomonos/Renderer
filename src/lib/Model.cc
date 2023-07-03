@@ -2,6 +2,8 @@
 
 #include "Renderer.hh"
 
+#include <fstream>
+
 static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s2, Color color)
 {
     if(static_cast<int>(s2.y()) == static_cast<int>(s1.y()))
@@ -461,7 +463,6 @@ void Model::updateNormals()
         Vector3 v1(p2.x() - p0.x(), p2.y() - p0.y(), p2.z() - p0.z());
         Vector3 normal;
         normal.asProduct(v0, v1).normalize();
-        triangle.normal.copy(normal);
 
         getVertex(triangle, 0).normal.asSum(getVertex(triangle, 0).normal, normal);
         getVertex(triangle, 1).normal.asSum(getVertex(triangle, 1).normal, normal);
@@ -502,4 +503,23 @@ void Model::renderWithMaterial(const Camera &camera, const Material &material, c
 
         fillTriangleWithVertexColor(s0, s1, s2, c0, c1, c2);
     }
+}
+
+void Model::fromDumpedFile(const std::string &fileName)
+{
+    std::ifstream file(fileName);
+    if(!file.is_open())
+    {
+        return;
+    }
+
+    int vertexCount;
+    file.read(reinterpret_cast<char *>(&vertexCount), sizeof(int));
+    vertices.resize(vertexCount);
+    file.read(reinterpret_cast<char *>(vertices.data()), sizeof(Vertex) * vertexCount);
+
+    int triangleCount;
+    file.read(reinterpret_cast<char *>(&triangleCount), sizeof(int));
+    triangles.resize(triangleCount);
+    file.read(reinterpret_cast<char *>(triangles.data()), sizeof(Triangle) * triangleCount);
 }

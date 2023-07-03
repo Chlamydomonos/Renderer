@@ -8,7 +8,6 @@ private:
     int v0;
     int v1;
     int v2;
-    Vector3 normal;
     friend class Model;
 public:
     Triangle() = default;

@@ -83,4 +83,5 @@ public:
     void renderAswireframeWithoutBackface(const Camera &camera, Color color = 0xffffff);
     void simpleRender(const Camera &camera, Color wireFrameColor = 0xffffff, Color fillColor = 0xff0000);
     void renderWithMaterial(const Camera &camera, const Material &material, const Light &light);
+    void fromDumpedFile(const std::string &fileName);
 };

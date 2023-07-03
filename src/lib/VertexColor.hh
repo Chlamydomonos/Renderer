@@ -28,7 +28,7 @@ public:
 
     Color toColor() const
     {
-        return RGB(r * 255, g * 255, b * 255);
+        return RGB(min(r, 1.0f) * 255, min(g, 1.0f)  * 255, min(b, 1.0f)  * 255);
     }
 
     void fromColor(Color color)
