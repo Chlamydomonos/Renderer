@@ -77,25 +77,79 @@ void WindowsHandler::onTimer(Window window)
 void WindowsHandler::onKeyDown(Window window, Key key)
 {
     ScopedLock lock(renderMutex);
-    if(key == VK_SPACE)
+    switch(key)
     {
-        Controller::INSTANCE.onSpaceDown();
-    }
-    else if(key == 'W')
-    {
-        Controller::INSTANCE.onWDown();
+    case 'W':
+        Controller::INSTANCE.wDown = true;
+        break;
+    case 'A':
+        Controller::INSTANCE.aDown = true;
+        break;
+    case 'S':
+        Controller::INSTANCE.sDown = true;
+        break;
+    case 'D':
+        Controller::INSTANCE.dDown = true;
+        break;
+    case VK_SPACE:
+        Controller::INSTANCE.spaceDown = true;
+        break;
+    case VK_SHIFT:
+        Controller::INSTANCE.shiftDown = true;
+        break;
+    case VK_UP:
+        Controller::INSTANCE.upDown = true;
+        break;
+    case VK_DOWN:
+        Controller::INSTANCE.downDown = true;
+        break;
+    case VK_LEFT:
+        Controller::INSTANCE.leftDown = true;
+        break;
+    case VK_RIGHT:
+        Controller::INSTANCE.rightDown = true;
+        break;
+    default:
+        break;
     }
 }
 
 void WindowsHandler::onKeyUp(Window window, Key key)
 {
     ScopedLock lock(renderMutex);
-    if(key == VK_SPACE)
+    switch(key)
     {
-        Controller::INSTANCE.onSpaceUp();
-    }
-    else if(key == 'W')
-    {
-        Controller::INSTANCE.onWUp();
+    case 'W':
+        Controller::INSTANCE.wDown = false;
+        break;
+    case 'A':
+        Controller::INSTANCE.aDown = false;
+        break;
+    case 'S':
+        Controller::INSTANCE.sDown = false;
+        break;
+    case 'D':
+        Controller::INSTANCE.dDown = false;
+        break;
+    case VK_SPACE:
+        Controller::INSTANCE.spaceDown = false;
+        break;
+    case VK_SHIFT:
+        Controller::INSTANCE.shiftDown = false;
+        break;
+    case VK_UP:
+        Controller::INSTANCE.upDown = false;
+        break;
+    case VK_DOWN:
+        Controller::INSTANCE.downDown = false;
+        break;
+    case VK_LEFT:
+        Controller::INSTANCE.leftDown = false;
+        break;
+    case VK_RIGHT:
+        Controller::INSTANCE.rightDown = false;
+        break;
+    default:
+        break;
     }
 }

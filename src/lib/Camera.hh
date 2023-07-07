@@ -3,6 +3,7 @@
 #include "geometry3.hh"
 
 #include "windows.hh"
+#include "FPController.hh"
 
 class Camera
 {
@@ -139,5 +140,13 @@ public:
     const Matrix3 &getViewToScreen() const
     {
         return viewToScreen;
+    }
+
+    void fromFPController(const FPController &controller)
+    {
+        pos.copy(controller.getPos());
+        dir.copy(controller.getFront());
+        up.copy(controller.getUp());
+        calculateWorldToView();
     }
 };

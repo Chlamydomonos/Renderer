@@ -3,6 +3,7 @@
 #include "Model.hh"
 #include "Controller.hh"
 #include "Parser.hh"
+#include "FPController.hh"
 
 #include <wingdi.h>
 #include <algorithm>
@@ -82,6 +83,10 @@ static Model simpleTriangle2(
 );
 
 static std::unique_ptr<Model> importedModel;
+static Camera camera;
+static Material material;
+static Light light;
+static FPController controller;
 
 void Renderer::init()
 {
@@ -96,32 +101,50 @@ void Renderer::render(PaintDevice canvas)
     resetZBuffer();
     this->canvas = canvas;
 
-    Camera camera;
-    static float temp;
-    static bool paused;
-    if(Controller::INSTANCE.tryGetSpaceSignal())
+    if(Controller::INSTANCE.isWDown())
     {
-        paused = !paused;
+        controller.moveForward(0.05f);
+    }
+    if(Controller::INSTANCE.isADown())
+    {
+        controller.moveRight(-0.05f);
+    }
+    if(Controller::INSTANCE.isSDown())
+    {
+        controller.moveForward(-0.05f);
+    }
+    if(Controller::INSTANCE.isDDown())
+    {
+        controller.moveRight(0.05f);
+    }
+    if(Controller::INSTANCE.isSpaceDown())
+    {
+        controller.moveUp(0.05f);
+    }
+    if(Controller::INSTANCE.isShiftDown())
+    {
+        controller.moveUp(-0.05f);
+    }
+    if(Controller::INSTANCE.isLeftDown())
+    {
+        controller.rotateYaw(-0.01f);
+    }
+    if(Controller::INSTANCE.isRightDown())
+    {
+        controller.rotateYaw(0.01f);
+    }
+    if(Controller::INSTANCE.isUpDown())
+    {
+        controller.rotatePitch(0.01f);
+    }
+    if(Controller::INSTANCE.isDownDown())
+    {
+        controller.rotatePitch(-0.01f);
     }
 
-    if(temp > PI / 4.0f)
-    {
-        temp = -PI / 4.0f;
-    }
-    else if(!paused || Controller::INSTANCE.tryGetWSignal())
-    {
-        temp += 0.01f;
-    }
-    camera.setPos(Point3(0.0f, 2.0f, 0.0f));
-    camera.setDir(Vector3(sin(temp), sin(-PI / 12.0f), cos(temp)));
-    camera.setUp(Vector3(0.0f, cos(-PI / 12.0f), 0.0f));
-
-    Material material;
-    Light light;
+    camera.fromFPController(controller);
 
     importedModel->renderWithMaterial(camera, material, light);
-    //cube.renderWithMaterial(camera, material, light);
-    //simpleTriangle1.renderWithMaterial(camera, material, light);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)

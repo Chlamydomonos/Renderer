@@ -5,60 +5,66 @@ class Controller
 private:
     Controller() = default;
     friend class WindowsHandler;
-
-    bool spaceDown = false;
-    int spaceSignals = 0;
-
-    void onSpaceDown()
-    {
-        spaceDown = true;
-    }
-
-    void onSpaceUp()
-    {
-        spaceDown = false;
-        spaceSignals++;
-    }
-
     bool wDown = false;
-    int wSignals = 0;
-
-    void onWDown()
-    {
-        wDown = true;
-    }
-
-    void onWUp()
-    {
-        wDown = false;
-        wSignals++;
-    }
+    bool aDown = false;
+    bool sDown = false;
+    bool dDown = false;
+    bool spaceDown = false;
+    bool shiftDown = false;
+    bool upDown = false;
+    bool downDown = false;
+    bool leftDown = false;
+    bool rightDown = false;
 public:
     static Controller INSTANCE;
 
-    bool tryGetSpaceSignal()
+    bool isWDown() const
     {
-        if (spaceSignals > 0)
-        {
-            spaceSignals--;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return wDown;
     }
 
-    bool tryGetWSignal()
+    bool isADown() const
     {
-        if (wSignals > 0)
-        {
-            wSignals--;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return aDown;
+    }
+
+    bool isSDown() const
+    {
+        return sDown;
+    }
+
+    bool isDDown() const
+    {
+        return dDown;
+    }
+
+    bool isSpaceDown() const
+    {
+        return spaceDown;
+    }
+
+    bool isShiftDown() const
+    {
+        return shiftDown;
+    }
+
+    bool isUpDown() const
+    {
+        return upDown;
+    }
+
+    bool isDownDown() const
+    {
+        return downDown;
+    }
+
+    bool isLeftDown() const
+    {
+        return leftDown;
+    }
+
+    bool isRightDown() const
+    {
+        return rightDown;
     }
 };
