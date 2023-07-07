@@ -126,4 +126,9 @@ public:
         temp.asProduct(transform, this->transform);
         this->transform.copy(temp);
     }
+
+    void translate(float x, float y, float z)
+    {
+        transform.thenTranslate(x, y, z);
+    }
 };

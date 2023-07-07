@@ -141,10 +141,50 @@ void Renderer::render(PaintDevice canvas)
     {
         controller.rotatePitch(-0.01f);
     }
+    if(Controller::INSTANCE.isIDown())
+    {
+        importedModel->translate(0.0f, 0.1f, 0.0f);
+    }
+    if(Controller::INSTANCE.isKDown())
+    {
+        importedModel->translate(0.0f, -0.1f, 0.0f);
+    }
+    if(Controller::INSTANCE.isJDown())
+    {
+        importedModel->translate(-0.1f, 0.0f, 0.0f);
+    }
+    if(Controller::INSTANCE.isLDown())
+    {
+        importedModel->translate(0.1f, 0.0f, 0.0f);
+    }
 
     camera.fromFPController(controller);
 
     importedModel->renderWithMaterial(camera, material, light);
+    //cube.renderWithMaterial(camera, material, light);
+
+    /*
+    static int offset;
+    if(Controller::INSTANCE.isSpaceDown())
+    {
+        if(offset < 500)
+            offset += 6;
+        else
+            offset = 0;
+    }
+
+    for(int i = 0; i < 64; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            SetPixel(canvas, offset + i + 100, j + 100, RGB(i * 4, i * 4, i * 4));
+        }
+    }
+    for(int i = 0; i < 64; i++)
+    {
+        SetPixel(canvas, offset + i + 100, 99, RGB(255, 0, 0));
+    }
+    */
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)

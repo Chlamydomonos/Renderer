@@ -12,4 +12,4 @@ using Key = WPARAM;
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 768
 #define TIMER_ID 1
-#define FPS 24
+#define FPS 60

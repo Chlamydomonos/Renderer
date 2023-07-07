@@ -15,6 +15,10 @@ private:
     bool downDown = false;
     bool leftDown = false;
     bool rightDown = false;
+    bool iDown = false;
+    bool kDown = false;
+    bool jDown = false;
+    bool lDown = false;
 public:
     static Controller INSTANCE;
 
@@ -66,5 +70,25 @@ public:
     bool isRightDown() const
     {
         return rightDown;
+    }
+
+    bool isIDown() const
+    {
+        return iDown;
+    }
+
+    bool isKDown() const
+    {
+        return kDown;
+    }
+
+    bool isJDown() const
+    {
+        return jDown;
+    }
+
+    bool isLDown() const
+    {
+        return lDown;
     }
 };

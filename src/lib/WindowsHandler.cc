@@ -109,6 +109,18 @@ void WindowsHandler::onKeyDown(Window window, Key key)
     case VK_RIGHT:
         Controller::INSTANCE.rightDown = true;
         break;
+    case 'I':
+        Controller::INSTANCE.iDown = true;
+        break;
+    case 'K':
+        Controller::INSTANCE.kDown = true;
+        break;
+    case 'J':
+        Controller::INSTANCE.jDown = true;
+        break;
+    case 'L':
+        Controller::INSTANCE.lDown = true;
+        break;
     default:
         break;
     }
@@ -148,6 +160,18 @@ void WindowsHandler::onKeyUp(Window window, Key key)
         break;
     case VK_RIGHT:
         Controller::INSTANCE.rightDown = false;
+        break;
+    case 'I':
+        Controller::INSTANCE.iDown = false;
+        break;
+    case 'K':
+        Controller::INSTANCE.kDown = false;
+        break;
+    case 'J':
+        Controller::INSTANCE.jDown = false;
+        break;
+    case 'L':
+        Controller::INSTANCE.lDown = false;
         break;
     default:
         break;

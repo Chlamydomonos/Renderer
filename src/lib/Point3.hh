@@ -28,6 +28,11 @@ public:
         return rawZ / rawW;
     }
 
+    float w() const
+    {
+        return rawW;
+    }
+
     Point3 &asSum(const Point3 &a, const Point3 &b)
     {
         rawX = a.rawX + b.rawX;

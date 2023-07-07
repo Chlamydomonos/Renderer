@@ -69,4 +69,12 @@ public:
         this->b = other.b;
         return *this;
     }
+
+    VertexColor &restrictColor()
+    {
+        r = min(r, 1.0f);
+        g = min(g, 1.0f);
+        b = min(b, 1.0f);
+        return *this;
+    }
 };

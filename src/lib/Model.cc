@@ -2,6 +2,7 @@
 
 #include "Renderer.hh"
 #include "windows.hh"
+#include "BarycentricPoint.hh"
 
 #include <fstream>
 
@@ -16,10 +17,8 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s0.x();
     auto dy0 = s2.y() - s0.y();
-    auto dz0 = s2.z() - s0.z();
     auto dx1 = s2.x() - s1.x();
     auto dy1 = s2.y() - s1.y();
-    auto dz1 = s2.z() - s1.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -28,19 +27,18 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s1.y()) * dx1 / dy1 + s1.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s1.y()) * dz1 / dy1 + s1.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
+            Point3 point(x, y, 0);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -52,10 +50,8 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
-    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -64,19 +60,18 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
+            Point3 point(x, y, 0);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -88,10 +83,8 @@ static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const 
     auto yEnd = static_cast<int>(s1.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
-    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -100,19 +93,17 @@ static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const 
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
+            Point3 point(x, y, 0);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -124,10 +115,8 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s1.x();
     auto dy0 = s2.y() - s1.y();
-    auto dz0 = s2.z() - s1.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -136,19 +125,17 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
     {
         auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s1.y()) * dz0 / dy0 + s1.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
+            Point3 point(x, y, 0);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
             Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color);
         }
     }
@@ -165,10 +152,8 @@ static inline void fillVType1(const Point3 &s0, const Point3 &s1, const Point3 &
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s0.x();
     auto dy0 = s2.y() - s0.y();
-    auto dz0 = s2.z() - s0.z();
     auto dx1 = s2.x() - s1.x();
     auto dy1 = s2.y() - s1.y();
-    auto dz1 = s2.z() - s1.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -177,28 +162,23 @@ static inline void fillVType1(const Point3 &s0, const Point3 &s1, const Point3 &
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s1.y()) * dx1 / dy1 + s1.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s1.y()) * dz1 / dy1 + s1.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
-            Point3 point(x, y, z);
-            Point3 barycentric;
-            barycentric.asBarycentric(s0, s1, s2, point);
-            VertexColor color0, color1, color2;
-            color0.asProduct(c0, barycentric.x());
-            color1.asProduct(c1, barycentric.y());
-            color2.asProduct(c2, barycentric.z());
-            color0.asSum(color0, color1).asSum(color0, color2);
-            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(point, color0.toColor());
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            VertexColor color(
+                barycentric.interpolate(c0.getR(), c1.getR(), c2.getR()),
+                barycentric.interpolate(c0.getG(), c1.getG(), c2.getG()),
+                barycentric.interpolate(c0.getB(), c1.getB(), c2.getB())
+            );
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color.toColor());
         }
     }
 }
@@ -209,10 +189,8 @@ static inline void fillVType2(const Point3 &s0, const Point3 &s1, const Point3 &
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
-    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -221,28 +199,23 @@ static inline void fillVType2(const Point3 &s0, const Point3 &s1, const Point3 &
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
-            Point3 point(x, y, z);
-            Point3 barycentric;
-            barycentric.asBarycentric(s0, s1, s2, point);
-            VertexColor color0, color1, color2;
-            color0.asProduct(c0, barycentric.x());
-            color1.asProduct(c1, barycentric.y());
-            color2.asProduct(c2, barycentric.z());
-            color0.asSum(color0, color1).asSum(color0, color2);
-            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(point, color0.toColor());
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            VertexColor color(
+                barycentric.interpolate(c0.getR(), c1.getR(), c2.getR()),
+                barycentric.interpolate(c0.getG(), c1.getG(), c2.getG()),
+                barycentric.interpolate(c0.getB(), c1.getB(), c2.getB())
+            );
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color.toColor());
         }
     }
 }
@@ -253,10 +226,8 @@ static inline void fillVType3LowerPart(const Point3 &s0, const Point3 &s1, const
     auto yEnd = static_cast<int>(s1.y());
     auto dx0 = s1.x() - s0.x();
     auto dy0 = s1.y() - s0.y();
-    auto dz0 = s1.z() - s0.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -265,28 +236,23 @@ static inline void fillVType3LowerPart(const Point3 &s0, const Point3 &s1, const
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s0.y()) * dz0 / dy0 + s0.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
-            Point3 point(x, y, z);
-            Point3 barycentric;
-            barycentric.asBarycentric(s0, s1, s2, point);
-            VertexColor color0, color1, color2;
-            color0.asProduct(c0, barycentric.x());
-            color1.asProduct(c1, barycentric.y());
-            color2.asProduct(c2, barycentric.z());
-            color0.asSum(color0, color1).asSum(color0, color2);
-            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(point, color0.toColor());
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            VertexColor color(
+                barycentric.interpolate(c0.getR(), c1.getR(), c2.getR()),
+                barycentric.interpolate(c0.getG(), c1.getG(), c2.getG()),
+                barycentric.interpolate(c0.getB(), c1.getB(), c2.getB())
+            );
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color.toColor());
         }
     }
 }
@@ -297,10 +263,8 @@ static inline void fillVType3UpperPart(const Point3 &s0, const Point3 &s1, const
     auto yEnd = static_cast<int>(s2.y());
     auto dx0 = s2.x() - s1.x();
     auto dy0 = s2.y() - s1.y();
-    auto dz0 = s2.z() - s1.z();
     auto dx1 = s2.x() - s0.x();
     auto dy1 = s2.y() - s0.y();
-    auto dz1 = s2.z() - s0.z();
 
     yStart = max(yStart, -1);
     yEnd = min(yEnd, WINDOW_HEIGHT);
@@ -309,28 +273,23 @@ static inline void fillVType3UpperPart(const Point3 &s0, const Point3 &s1, const
     {
         auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
         auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
-        auto z0 = (y - s1.y()) * dz0 / dy0 + s1.z();
-        auto z1 = (y - s0.y()) * dz1 / dy1 + s0.z();
         auto xStart = x0 < x1 ? x0 : x1;
         auto xEnd = x0 < x1 ? x1 : x0;
-        auto zStart = z1 < z0 ? z0 : z1;
-        auto zEnd = z1 < z0 ? z1 : z0;
 
         xStart = max(xStart, -1);
         xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
-            auto z = zStart + (x - xStart) / (xEnd - xStart) * (zEnd - zStart);
-            Point3 point(x, y, z);
-            Point3 barycentric;
-            barycentric.asBarycentric(s0, s1, s2, point);
-            VertexColor color0, color1, color2;
-            color0.asProduct(c0, barycentric.x());
-            color1.asProduct(c1, barycentric.y());
-            color2.asProduct(c2, barycentric.z());
-            color0.asSum(color0, color1).asSum(color0, color2);
-            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(point, color0.toColor());
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            VertexColor color(
+                barycentric.interpolate(c0.getR(), c1.getR(), c2.getR()),
+                barycentric.interpolate(c0.getG(), c1.getG(), c2.getG()),
+                barycentric.interpolate(c0.getB(), c1.getB(), c2.getB())
+            );
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(Point3(x, y, z), color.toColor());
         }
     }
 }
@@ -369,7 +328,7 @@ static inline void calculateColor(const Point3 &point, const Vector3 &normal, co
     VertexColor ambient;
     ambient.asProduct(lightColor, material.getAmbient());
 
-    output->copy(diffuse).asSum(*output, specular).asSum(*output, ambient);
+    output->copy(diffuse).asSum(*output, specular).asSum(*output, ambient).restrictColor();
 }
 
 void Model::fillTriangle(Point3 &s0, Point3 &s1, Point3 &s2, Color color)
