@@ -10,6 +10,7 @@ WindowsHandler WindowsHandler::INSTANCE;
 void WindowsHandler::onCreate(Window window)
 {
     SetTimer(window, TIMER_ID, 1000 / FPS, NULL);
+    Renderer::INSTANCE.init();
 
     renderThread = std::thread([&]() {
         while(threadRunning)

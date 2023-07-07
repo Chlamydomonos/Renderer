@@ -22,6 +22,7 @@ public:
     {
         std::fill(&zBuffer[0][0], &zBuffer[0][0] + WINDOW_WIDTH * WINDOW_HEIGHT, 0.0f);
     }
+    void init();
     void render(PaintDevice canvas);
     void render2dPoint(const Point2 &point, Color color = 0xffffff);
     void renderScreenSpacePoint(const Point3 &point, Color color = 0xffffff);

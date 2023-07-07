@@ -8,6 +8,7 @@ private:
     Point3 pos;
     Vector3 normal;
     friend class Model;
+    friend class Parser;
 public:
     Vertex() = default;
     Vertex(float x, float y, float z) : pos(x, y, z) {}

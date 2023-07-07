@@ -1,6 +1,7 @@
 #include "Model.hh"
 
 #include "Renderer.hh"
+#include "windows.hh"
 
 #include <fstream>
 
@@ -20,6 +21,9 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
     auto dy1 = s2.y() - s1.y();
     auto dz1 = s2.z() - s1.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y < yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -30,6 +34,9 @@ static inline void fillType1(const Point3 &s0, const Point3 &s1, const Point3 &s
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
@@ -50,6 +57,9 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y < yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -60,6 +70,9 @@ static inline void fillType2(const Point3 &s0, const Point3 &s1, const Point3 &s
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
@@ -80,6 +93,9 @@ static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const 
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y <= yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -90,6 +106,9 @@ static inline void fillType3LowerPart(const Point3 &s0, const Point3 &s1, const 
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
@@ -110,6 +129,9 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y < yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
@@ -120,6 +142,9 @@ static inline void fillType3UpperPart(const Point3 &s0, const Point3 &s1, const 
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x < xEnd; x++)
         {
@@ -145,6 +170,9 @@ static inline void fillVType1(const Point3 &s0, const Point3 &s1, const Point3 &
     auto dy1 = s2.y() - s1.y();
     auto dz1 = s2.z() - s1.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y <= yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -155,6 +183,9 @@ static inline void fillVType1(const Point3 &s0, const Point3 &s1, const Point3 &
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
@@ -183,6 +214,9 @@ static inline void fillVType2(const Point3 &s0, const Point3 &s1, const Point3 &
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y <= yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -193,6 +227,9 @@ static inline void fillVType2(const Point3 &s0, const Point3 &s1, const Point3 &
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
@@ -221,6 +258,9 @@ static inline void fillVType3LowerPart(const Point3 &s0, const Point3 &s1, const
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y <= yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
@@ -231,6 +271,9 @@ static inline void fillVType3LowerPart(const Point3 &s0, const Point3 &s1, const
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
@@ -259,6 +302,9 @@ static inline void fillVType3UpperPart(const Point3 &s0, const Point3 &s1, const
     auto dy1 = s2.y() - s0.y();
     auto dz1 = s2.z() - s0.z();
 
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
     for(int y = yStart + 1; y <= yEnd; y++)
     {
         auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
@@ -269,6 +315,9 @@ static inline void fillVType3UpperPart(const Point3 &s0, const Point3 &s1, const
         auto xEnd = x0 < x1 ? x1 : x0;
         auto zStart = z1 < z0 ? z0 : z1;
         auto zEnd = z1 < z0 ? z1 : z0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
 
         for(int x = xStart + 1; x <= xEnd; x++)
         {
@@ -391,9 +440,18 @@ void Model::renderAsWireframe(const Camera &camera, Color color)
 {
     for (Triangle &triangle : triangles)
     {
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, color);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, color);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, color);
+        const Point3 &p0 = getVertex(triangle, 0).getPos();
+        const Point3 &p1 = getVertex(triangle, 1).getPos();
+        const Point3 &p2 = getVertex(triangle, 2).getPos();
+
+        Point3 w0, w1, w2;
+        w0.asProduct(transform, p0);
+        w1.asProduct(transform, p1);
+        w2.asProduct(transform, p2);
+
+        Renderer::INSTANCE.renderWorldSpaceLine(w0, w1, camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(w1, w2, camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(w2, w0, camera, color);
     }
 }
 
@@ -404,13 +462,17 @@ void Model::renderAswireframeWithoutBackface(const Camera &camera, Color color)
         const Point3 &p0 = getVertex(triangle, 0).getPos();
         const Point3 &p1 = getVertex(triangle, 1).getPos();
         const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 w;
         Point3 temp;
         Point3 s0, s1, s2;
-        temp.asProduct(camera.getWorldToView(), p0);
+        w.asProduct(transform, p0);
+        temp.asProduct(camera.getWorldToView(), w);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p1);
+        w.asProduct(transform, p1);
+        temp.asProduct(camera.getWorldToView(), w);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p2);
+        w.asProduct(transform, p2);
+        temp.asProduct(camera.getWorldToView(), w);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
         if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
@@ -431,13 +493,17 @@ void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillC
         const Point3 &p0 = getVertex(triangle, 0).getPos();
         const Point3 &p1 = getVertex(triangle, 1).getPos();
         const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 w;
         Point3 temp;
         Point3 s0, s1, s2;
-        temp.asProduct(camera.getWorldToView(), p0);
+        w.asProduct(transform, p0);
+        temp.asProduct(camera.getWorldToView(), w);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p1);
+        w.asProduct(transform, p1);
+        temp.asProduct(camera.getWorldToView(), w);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p2);
+        w.asProduct(transform, p2);
+        temp.asProduct(camera.getWorldToView(), w);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
         if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
@@ -482,13 +548,21 @@ void Model::renderWithMaterial(const Camera &camera, const Material &material, c
         const Point3 &p0 = getVertex(triangle, 0).getPos();
         const Point3 &p1 = getVertex(triangle, 1).getPos();
         const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 w0, w1, w2;
+        Vector3 n0, n1, n2;
         Point3 temp;
         Point3 s0, s1, s2;
-        temp.asProduct(camera.getWorldToView(), p0);
+        w0.asProduct(transform, p0);
+        n0.asProduct(transform, getVertex(triangle, 0).normal);
+        temp.asProduct(camera.getWorldToView(), w0);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p1);
+        w1.asProduct(transform, p1);
+        n1.asProduct(transform, getVertex(triangle, 1).normal);
+        temp.asProduct(camera.getWorldToView(), w1);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        temp.asProduct(camera.getWorldToView(), p2);
+        w2.asProduct(transform, p2);
+        n2.asProduct(transform, getVertex(triangle, 2).normal);
+        temp.asProduct(camera.getWorldToView(), w2);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
         if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
@@ -497,29 +571,10 @@ void Model::renderWithMaterial(const Camera &camera, const Material &material, c
         }
 
         VertexColor c0, c1, c2;
-        calculateColor(p0, getVertex(triangle, 0).normal, material, light, camera, &c0);
-        calculateColor(p1, getVertex(triangle, 1).normal, material, light, camera, &c1);
-        calculateColor(p2, getVertex(triangle, 2).normal, material, light, camera, &c2);
+        calculateColor(w0, n0, material, light, camera, &c0);
+        calculateColor(w1, n1, material, light, camera, &c1);
+        calculateColor(w2, n2, material, light, camera, &c2);
 
         fillTriangleWithVertexColor(s0, s1, s2, c0, c1, c2);
     }
-}
-
-void Model::fromDumpedFile(const std::string &fileName)
-{
-    std::ifstream file(fileName);
-    if(!file.is_open())
-    {
-        return;
-    }
-
-    int vertexCount;
-    file.read(reinterpret_cast<char *>(&vertexCount), sizeof(int));
-    vertices.resize(vertexCount);
-    file.read(reinterpret_cast<char *>(vertices.data()), sizeof(Vertex) * vertexCount);
-
-    int triangleCount;
-    file.read(reinterpret_cast<char *>(&triangleCount), sizeof(int));
-    triangles.resize(triangleCount);
-    file.read(reinterpret_cast<char *>(triangles.data()), sizeof(Triangle) * triangleCount);
 }

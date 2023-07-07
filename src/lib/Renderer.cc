@@ -2,6 +2,7 @@
 
 #include "Model.hh"
 #include "Controller.hh"
+#include "Parser.hh"
 
 #include <wingdi.h>
 #include <algorithm>
@@ -80,6 +81,16 @@ static Model simpleTriangle2(
     }
 );
 
+static std::unique_ptr<Model> importedModel;
+
+void Renderer::init()
+{
+    importedModel = Parser::INSTANCE.parse("D:/sphere.obj");
+    Matrix3 transform;
+    transform.translate(0.0f, 0.0f, 10.0f);
+    importedModel->applyTransform(transform);
+}
+
 void Renderer::render(PaintDevice canvas)
 {
     resetZBuffer();
@@ -108,7 +119,8 @@ void Renderer::render(PaintDevice canvas)
     Material material;
     Light light;
 
-    cube.renderWithMaterial(camera, material, light);
+    importedModel->renderWithMaterial(camera, material, light);
+    //cube.renderWithMaterial(camera, material, light);
     //simpleTriangle1.renderWithMaterial(camera, material, light);
 }
 

@@ -6,6 +6,8 @@
 #include "VertexColor.hh"
 #include "Material.hh"
 #include "Light.hh"
+#include "TexturePoint.hh"
+#include "geometry3.hh"
 
 #include <vector>
 #include <stdexcept>
@@ -15,18 +17,53 @@ class Model
 private:
     std::vector<Vertex> vertices;
     std::vector<Triangle> triangles;
+    std::vector<TexturePoint> textures;
+    Matrix3 transform;
 
     void fillTriangle(Point3 &s0, Point3 &s1, Point3 &s2, Color color);
     void fillTriangleWithVertexColor(Point3 &s0, Point3 &s1, Point3 &s2, VertexColor &c0, VertexColor &c1, VertexColor &c2);
     void updateNormals();
+
+    friend class Parser;
 public:
-    Model() : vertices(), triangles()
+    Model() : vertices(), triangles(), textures()
     {
+        transform.identity();
         updateNormals();
     }
-    Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles) : vertices(vertices), triangles(triangles)
+
+    Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles)
+    : vertices(vertices), triangles(triangles), textures()
     {
+        transform.identity();
         updateNormals();
+    }
+
+    Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles, bool doNotUpdateNormals)
+    : vertices(vertices), triangles(triangles), textures()
+    {
+        transform.identity();
+        if (!doNotUpdateNormals)
+        {
+            updateNormals();
+        }
+    }
+
+    Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles, const std::vector<TexturePoint> &textures)
+    : vertices(vertices), triangles(triangles), textures(textures)
+    {
+        transform.identity();
+        updateNormals();
+    }
+
+    Model(const std::vector<Vertex> &vertices, const std::vector<Triangle> &triangles, const std::vector<TexturePoint> &textures, bool doNotUpdateNormals)
+    : vertices(vertices), triangles(triangles), textures(textures)
+    {
+        transform.identity();
+        if (!doNotUpdateNormals)
+        {
+            updateNormals();
+        }
     }
 
     std::vector<Vertex> &getVertices()
@@ -83,5 +120,10 @@ public:
     void renderAswireframeWithoutBackface(const Camera &camera, Color color = 0xffffff);
     void simpleRender(const Camera &camera, Color wireFrameColor = 0xffffff, Color fillColor = 0xff0000);
     void renderWithMaterial(const Camera &camera, const Material &material, const Light &light);
-    void fromDumpedFile(const std::string &fileName);
+    void applyTransform(const Matrix3 &transform)
+    {
+        Matrix3 temp;
+        temp.asProduct(transform, this->transform);
+        this->transform.copy(temp);
+    }
 };
