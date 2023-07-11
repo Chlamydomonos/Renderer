@@ -4,8 +4,11 @@
 #include "Controller.hh"
 
 #include <cstdio>
+#include <string>
 
 WindowsHandler WindowsHandler::INSTANCE;
+
+static LARGE_INTEGER lastTime;
 
 void WindowsHandler::onCreate(Window window)
 {
@@ -30,6 +33,9 @@ void WindowsHandler::onPaint(Window window, PaintDevice device)
 
         if(canvas != NULL)
         {
+            auto str = std::to_string(currentFPS);
+            DrawText(canvas, str.c_str(), -1, new RECT{ 0, 0, 200, 200 }, DT_LEFT);
+
             BitBlt(device, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, canvas, 0, 0, SRCCOPY);
 
     	    DeleteDC(canvas);
@@ -44,6 +50,11 @@ void WindowsHandler::onPaint(Window window, PaintDevice device)
         SelectObject(canvas, bmp);
 
         rendering = true;
+        LARGE_INTEGER currentTime, frequency;
+        QueryPerformanceCounter(&currentTime);
+        QueryPerformanceFrequency(&frequency);
+        currentFPS = (float)frequency.QuadPart / (currentTime.QuadPart - lastTime.QuadPart);
+        lastTime = currentTime;
     }
     renderCond.notify_one();
 }
@@ -184,6 +195,36 @@ void WindowsHandler::onKeyUp(Window window, Key key)
         break;
     case 'E':
         Controller::INSTANCE.eDown = false;
+        break;
+    case '1':
+        Controller::INSTANCE.signals[0]++;
+        break;
+    case '2':
+        Controller::INSTANCE.signals[1]++;
+        break;
+    case '3':
+        Controller::INSTANCE.signals[2]++;
+        break;
+    case '4':
+        Controller::INSTANCE.signals[3]++;
+        break;
+    case '5':
+        Controller::INSTANCE.signals[4]++;
+        break;
+    case '6':
+        Controller::INSTANCE.signals[5]++;
+        break;
+    case '7':
+        Controller::INSTANCE.signals[6]++;
+        break;
+    case '8':
+        Controller::INSTANCE.signals[7]++;
+        break;
+    case '9':
+        Controller::INSTANCE.signals[8]++;
+        break;
+    case '0':
+        Controller::INSTANCE.signals[9]++;
         break;
     default:
         break;

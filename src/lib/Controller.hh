@@ -21,6 +21,7 @@ private:
     bool lDown = false;
     bool qDown = false;
     bool eDown = false;
+    int signals[10] = {0};
 public:
     static Controller INSTANCE;
 
@@ -102,5 +103,15 @@ public:
     bool isEDown() const
     {
         return eDown;
+    }
+
+    bool tryGetSignal(int i)
+    {
+        if(signals[i] > 0)
+        {
+            signals[i]--;
+            return true;
+        }
+        return false;
     }
 };

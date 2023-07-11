@@ -24,6 +24,7 @@ private:
     bool rendering = false;
     HINSTANCE instance;
     friend int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
+    float currentFPS;
 public:
     static WindowsHandler INSTANCE;
 

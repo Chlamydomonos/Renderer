@@ -47,7 +47,7 @@ private:
     int height;
     std::unique_ptr<BMPBuffer> buffer;
 public:
-    TexturedMaterial(Bitmap image) : ambient(0.2f), diffuse(image), specular(0.0f)
+    TexturedMaterial(Bitmap image) : ambient(0.2f), diffuse(image), specular(0.2f)
     {
         BITMAP bm;
         GetObject(image, sizeof(bm), &bm);

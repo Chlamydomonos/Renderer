@@ -49,6 +49,10 @@ Color TexturedMaterial::calculateColor(const Point3 &point, const Vector3 &norma
     diffuse.asProduct(lightColor, vertexColor).asProduct(diffuse, theta > 0.0f ? theta : 0.0f);
 
     auto alpha = normal * halfVector;
+    if(alpha > 1.0f)
+    {
+        alpha = 1.0f;
+    }
     VertexColor specular;
     specular.asProduct(lightColor, this->specular).asProduct(specular, alpha > 0.0f ? simplePow128(alpha) : 0.0f);
 

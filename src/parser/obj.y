@@ -13,6 +13,7 @@
 #include <stdlib.h>
 
 int yylex(void);
+void yyrestart(FILE*);
 void yyerror(char *s) { }
 extern FILE *yyin;
 %}
@@ -90,6 +91,7 @@ void parseFile(const char *fileName)
     }
 
     yyin = file;
+    yyrestart(yyin);
     initParser();
     yyparse();
     fclose(file);

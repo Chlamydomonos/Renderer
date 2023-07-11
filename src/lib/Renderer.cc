@@ -20,90 +20,51 @@ constexpr float PI = 3.14159265358979323846f;
 
 Renderer Renderer::INSTANCE;
 
-static Model cube(
-    {
-        Vertex(-1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 11.0f),
-        Vertex(-1.0f, -1.0f, 11.0f),
-        Vertex(-1.0f, 1.0f, 9.0f),
-        Vertex(1.0f, 1.0f, 9.0f),
-        Vertex(1.0f, 1.0f, 11.0f),
-        Vertex(-1.0f, 1.0f, 11.0f),
-    },
-    {
-        Triangle(0, 1, 2),
-        Triangle(0, 2, 3),
-        Triangle(4, 6, 5),
-        Triangle(4, 7, 6),
-        Triangle(0, 4, 5),
-        Triangle(0, 5, 1),
-        Triangle(1, 5, 6),
-        Triangle(1, 6, 2),
-        Triangle(2, 6, 7),
-        Triangle(2, 7, 3),
-        Triangle(3, 7, 4),
-        Triangle(3, 4, 0),
-    }
-);
-
-static Model simpleTwoTriangles(
-    {
-        Vertex(-1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, 1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 11.0f),
-    },
-    {
-        Triangle(0, 1, 2),
-        Triangle(0, 1, 3),
-    }
-);
-
-static Model simpleTriangle1(
-    {
-        Vertex(-1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, 1.0f, 9.0f),
-    },
-    {
-        Triangle(0, 2, 1)
-    }
-);
-
-static Model simpleTriangle2(
-    {
-        Vertex(-1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 9.0f),
-        Vertex(1.0f, -1.0f, 11.0f),
-    },
-    {
-        Triangle(0, 1, 2)
-    }
-);
-
+static std::unique_ptr<Model> cube;
 static std::unique_ptr<Model> importedModel;
 static Camera camera;
 static Material material;
 static Light light;
 static FPController controller;
 static std::unique_ptr<TexturedMaterial> texturedMaterial;
+static std::unique_ptr<TexturedMaterial> cubeMaterial;
+static enum Mode
+{
+    CUBE_WIREFRAME = 0,
+    CUBE_SIMPLE,
+    CUBE_FLAT,
+    CUBE_GOURAUD,
+    CUBE_PHONG,
+    BUNNY_WIREFRAME,
+    BUNNY_SIMPLE,
+    BUNNY_FLAT,
+    BUNNY_GOURAUD,
+    BUNNY_PHONG,
+} mode;
 
 void Renderer::init()
 {
     importedModel = Parser::INSTANCE.parse("D:/bunny.obj");
+    cube = Parser::INSTANCE.parse("D:/cube.obj");
     Matrix3 transform;
     transform.scale(0.1f, 0.1f, 0.1f).thenTranslate(0.0f, 0.0f, 20.0f);
     importedModel->applyTransform(transform);
+    Matrix3 cubeTransform;
+    cubeTransform.translate(0.0f, 0.0f, 10.0f);
+    cube->applyTransform(cubeTransform);
 
     auto bitmap = (Bitmap)LoadImage(NULL, "D:/texture.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
     texturedMaterial = std::make_unique<TexturedMaterial>(bitmap);
+    bitmap = (Bitmap)LoadImage(NULL, "D:/cube.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+    cubeMaterial = std::make_unique<TexturedMaterial>(bitmap);
 }
 
 void Renderer::render(PaintDevice canvas)
 {
     resetZBuffer();
     this->canvas = canvas;
+
+    auto currentModel = (int)mode / 5 ? importedModel.get() : cube.get();
 
     if(Controller::INSTANCE.isWDown())
     {
@@ -147,34 +108,72 @@ void Renderer::render(PaintDevice canvas)
     }
     if(Controller::INSTANCE.isIDown())
     {
-        importedModel->translate(0.0f, 0.1f, 0.0f);
+        currentModel->translate(0.0f, 0.1f, 0.0f);
     }
     if(Controller::INSTANCE.isKDown())
     {
-        importedModel->translate(0.0f, -0.1f, 0.0f);
+        currentModel->translate(0.0f, -0.1f, 0.0f);
     }
     if(Controller::INSTANCE.isJDown())
     {
-        importedModel->translate(-0.1f, 0.0f, 0.0f);
+        currentModel->translate(-0.1f, 0.0f, 0.0f);
     }
     if(Controller::INSTANCE.isLDown())
     {
-        importedModel->translate(0.1f, 0.0f, 0.0f);
+        currentModel->translate(0.1f, 0.0f, 0.0f);
     }
     if(Controller::INSTANCE.isQDown())
     {
-        importedModel->rotateY(-0.1f);
+        currentModel->rotateY(-0.1f);
     }
     if(Controller::INSTANCE.isEDown())
     {
-        importedModel->rotateY(0.1f);
+        currentModel->rotateY(0.1f);
+    }
+
+    for(int i = 0; i < 10; i++)
+    {
+        if(Controller::INSTANCE.tryGetSignal(i))
+        {
+            mode = (Mode)i;
+        }
     }
 
     camera.fromFPController(controller);
 
-    //importedModel->renderWithMaterial(camera, material, light);
-    //cube.renderWithMaterial(camera, material, light);
-    importedModel->renderWithTexture(camera, *texturedMaterial, light);
+    switch(mode)
+    {
+    case CUBE_WIREFRAME:
+        cube->renderAsWireframe(camera);
+        break;
+    case CUBE_SIMPLE:
+        cube->renderAswireframeWithoutBackface(camera);
+        break;
+    case CUBE_FLAT:
+        cube->simpleRender(camera);
+        break;
+    case CUBE_GOURAUD:
+        cube->renderWithMaterial(camera, material, light);
+        break;
+    case CUBE_PHONG:
+        cube->renderWithTexture(camera, *cubeMaterial, light);
+        break;
+    case BUNNY_WIREFRAME:
+        importedModel->renderAsWireframe(camera);
+        break;
+    case BUNNY_SIMPLE:
+        importedModel->renderAswireframeWithoutBackface(camera);
+        break;
+    case BUNNY_FLAT:
+        importedModel->simpleRender(camera);
+        break;
+    case BUNNY_GOURAUD:
+        importedModel->renderWithMaterial(camera, material, light);
+        break;
+    case BUNNY_PHONG:
+        importedModel->renderWithTexture(camera, *texturedMaterial, light);
+        break;
+    }
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)

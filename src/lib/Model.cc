@@ -523,6 +523,10 @@ static inline void calculateColor(const Point3 &point, const Vector3 &normal, co
     diffuse.asProduct(lightColor, material.getDiffuse()).asProduct(diffuse, theta > 0.0f ? theta : 0.0f);
 
     auto alpha = normal * halfVector;
+    if(alpha > 1.0f)
+    {
+        alpha = 1.0f;
+    }
     VertexColor specular;
     specular.asProduct(lightColor, material.getSpecular()).asProduct(specular, alpha > 0.0f ? simplePow128(alpha) : 0.0f);
 
@@ -661,17 +665,17 @@ void Model::renderAswireframeWithoutBackface(const Camera &camera, Color color)
         const Point3 &p0 = getVertex(triangle, 0).getPos();
         const Point3 &p1 = getVertex(triangle, 1).getPos();
         const Point3 &p2 = getVertex(triangle, 2).getPos();
-        Point3 w;
+        Point3 w0, w1, w2;
         Point3 temp;
         Point3 s0, s1, s2;
-        w.asProduct(transform, p0);
-        temp.asProduct(camera.getWorldToView(), w);
+        w0.asProduct(transform, p0);
+        temp.asProduct(camera.getWorldToView(), w0);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        w.asProduct(transform, p1);
-        temp.asProduct(camera.getWorldToView(), w);
+        w1.asProduct(transform, p1);
+        temp.asProduct(camera.getWorldToView(), w1);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        w.asProduct(transform, p2);
-        temp.asProduct(camera.getWorldToView(), w);
+        w2.asProduct(transform, p2);
+        temp.asProduct(camera.getWorldToView(), w2);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
         if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
@@ -679,9 +683,9 @@ void Model::renderAswireframeWithoutBackface(const Camera &camera, Color color)
             continue;
         }
 
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, color);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, color);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(w0, w1, camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(w1, w2, camera, color);
+        Renderer::INSTANCE.renderWorldSpaceLine(w2, w0, camera, color);
     }
 }
 
@@ -692,17 +696,17 @@ void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillC
         const Point3 &p0 = getVertex(triangle, 0).getPos();
         const Point3 &p1 = getVertex(triangle, 1).getPos();
         const Point3 &p2 = getVertex(triangle, 2).getPos();
-        Point3 w;
+        Point3 w0, w1, w2;
         Point3 temp;
         Point3 s0, s1, s2;
-        w.asProduct(transform, p0);
-        temp.asProduct(camera.getWorldToView(), w);
+        w0.asProduct(transform, p0);
+        temp.asProduct(camera.getWorldToView(), w0);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        w.asProduct(transform, p1);
-        temp.asProduct(camera.getWorldToView(), w);
+        w1.asProduct(transform, p1);
+        temp.asProduct(camera.getWorldToView(), w1);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
-        w.asProduct(transform, p2);
-        temp.asProduct(camera.getWorldToView(), w);
+        w2.asProduct(transform, p2);
+        temp.asProduct(camera.getWorldToView(), w2);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
         if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
@@ -711,9 +715,9 @@ void Model::simpleRender(const Camera &camera, Color wireFrameColor, Color fillC
         }
 
         fillTriangle(s0, s1, s2, fillColor);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 0).getPos(), getVertex(triangle, 1).getPos(), camera, wireFrameColor);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 1).getPos(), getVertex(triangle, 2).getPos(), camera, wireFrameColor);
-        Renderer::INSTANCE.renderWorldSpaceLine(getVertex(triangle, 2).getPos(), getVertex(triangle, 0).getPos(), camera, wireFrameColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(w0, w1, camera, wireFrameColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(w1, w2, camera, wireFrameColor);
+        Renderer::INSTANCE.renderWorldSpaceLine(w2, w0, camera, wireFrameColor);
     }
 }
 
