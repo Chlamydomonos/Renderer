@@ -19,6 +19,8 @@ private:
     bool kDown = false;
     bool jDown = false;
     bool lDown = false;
+    bool qDown = false;
+    bool eDown = false;
 public:
     static Controller INSTANCE;
 
@@ -90,5 +92,15 @@ public:
     bool isLDown() const
     {
         return lDown;
+    }
+
+    bool isQDown() const
+    {
+        return qDown;
+    }
+
+    bool isEDown() const
+    {
+        return eDown;
     }
 };

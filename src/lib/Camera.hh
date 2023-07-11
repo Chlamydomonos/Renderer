@@ -19,7 +19,7 @@ private:
     float b;
     float t;
     float n = -0.5f;
-    float f = -20.0f;
+    float f = -100.0f;
 
     void calculateLRBT()
     {

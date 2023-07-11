@@ -8,6 +8,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+    WindowsHandler::INSTANCE.instance = hInstance;
+
     const wchar_t CLASS_NAME[] = L"Renderer";
 
     WNDCLASS wc = {};

@@ -22,6 +22,8 @@ private:
     Bitmap bmp;
     bool threadRunning = true;
     bool rendering = false;
+    HINSTANCE instance;
+    friend int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
 public:
     static WindowsHandler INSTANCE;
 
@@ -32,4 +34,8 @@ public:
     void onTimer(Window window);
     void onKeyDown(Window window, Key key);
     void onKeyUp(Window window, Key key);
+    HINSTANCE getInstance()
+    {
+        return instance;
+    }
 };

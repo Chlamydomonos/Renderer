@@ -121,6 +121,12 @@ void WindowsHandler::onKeyDown(Window window, Key key)
     case 'L':
         Controller::INSTANCE.lDown = true;
         break;
+    case 'Q':
+        Controller::INSTANCE.qDown = true;
+        break;
+    case 'E':
+        Controller::INSTANCE.eDown = true;
+        break;
     default:
         break;
     }
@@ -172,6 +178,12 @@ void WindowsHandler::onKeyUp(Window window, Key key)
         break;
     case 'L':
         Controller::INSTANCE.lDown = false;
+        break;
+    case 'Q':
+        Controller::INSTANCE.qDown = false;
+        break;
+    case 'E':
+        Controller::INSTANCE.eDown = false;
         break;
     default:
         break;

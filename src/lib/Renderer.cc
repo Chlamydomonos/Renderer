@@ -87,13 +87,17 @@ static Camera camera;
 static Material material;
 static Light light;
 static FPController controller;
+static std::unique_ptr<TexturedMaterial> texturedMaterial;
 
 void Renderer::init()
 {
-    importedModel = Parser::INSTANCE.parse("D:/sphere.obj");
+    importedModel = Parser::INSTANCE.parse("D:/bunny.obj");
     Matrix3 transform;
-    transform.translate(0.0f, 0.0f, 10.0f);
+    transform.scale(0.1f, 0.1f, 0.1f).thenTranslate(0.0f, 0.0f, 20.0f);
     importedModel->applyTransform(transform);
+
+    auto bitmap = (Bitmap)LoadImage(NULL, "D:/texture.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+    texturedMaterial = std::make_unique<TexturedMaterial>(bitmap);
 }
 
 void Renderer::render(PaintDevice canvas)
@@ -157,34 +161,20 @@ void Renderer::render(PaintDevice canvas)
     {
         importedModel->translate(0.1f, 0.0f, 0.0f);
     }
+    if(Controller::INSTANCE.isQDown())
+    {
+        importedModel->rotateY(-0.1f);
+    }
+    if(Controller::INSTANCE.isEDown())
+    {
+        importedModel->rotateY(0.1f);
+    }
 
     camera.fromFPController(controller);
 
-    importedModel->renderWithMaterial(camera, material, light);
+    //importedModel->renderWithMaterial(camera, material, light);
     //cube.renderWithMaterial(camera, material, light);
-
-    /*
-    static int offset;
-    if(Controller::INSTANCE.isSpaceDown())
-    {
-        if(offset < 500)
-            offset += 6;
-        else
-            offset = 0;
-    }
-
-    for(int i = 0; i < 64; i++)
-    {
-        for(int j = 0; j < 64; j++)
-        {
-            SetPixel(canvas, offset + i + 100, j + 100, RGB(i * 4, i * 4, i * 4));
-        }
-    }
-    for(int i = 0; i < 64; i++)
-    {
-        SetPixel(canvas, offset + i + 100, 99, RGB(255, 0, 0));
-    }
-    */
+    importedModel->renderWithTexture(camera, *texturedMaterial, light);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)

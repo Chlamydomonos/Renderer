@@ -294,6 +294,207 @@ static inline void fillVType3UpperPart(const Point3 &s0, const Point3 &s1, const
     }
 }
 
+static inline void fillTType1(const Point3 &w0, const Point3 &w1, const Point3 &w2, const Point3 &s0, const Point3 &s1, const Point3 &s2, const TexturePoint &t1, const TexturePoint &t2, const TexturePoint &t3, const Vector3 &n1, const Vector3 &n2, const Vector3 &n3, const TexturedMaterial &material, const Light &light, const Camera &camera)
+{
+    if(static_cast<int>(s2.y()) == static_cast<int>(s1.y()))
+    {
+        return;
+    }
+
+    auto yStart = static_cast<int>(s0.y());
+    auto yEnd = static_cast<int>(s2.y());
+    auto dx0 = s2.x() - s0.x();
+    auto dy0 = s2.y() - s0.y();
+    auto dx1 = s2.x() - s1.x();
+    auto dy1 = s2.y() - s1.y();
+
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
+    for(int y = yStart + 1; y <= yEnd; y++)
+    {
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s1.y()) * dx1 / dy1 + s1.x());
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
+
+        for(int x = xStart + 1; x <= xEnd; x++)
+        {
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            Point3 worldPoint(
+                barycentric.interpolate(w0.x(), w1.x(), w2.x()),
+                barycentric.interpolate(w0.y(), w1.y(), w2.y()),
+                barycentric.interpolate(w0.z(), w1.z(), w2.z())
+            );
+            Point3 screenPoint(x, y, z);
+            Vector3 normal(
+                barycentric.interpolate(n1.x(), n2.x(), n3.x()),
+                barycentric.interpolate(n1.y(), n2.y(), n3.y()),
+                barycentric.interpolate(n1.z(), n2.z(), n3.z())
+            );
+            TexturePoint uv(
+                barycentric.interpolate(t1.getX(), t2.getX(), t3.getX()),
+                barycentric.interpolate(t1.getY(), t2.getY(), t3.getY())
+            );
+
+            auto color = material.calculateColor(worldPoint, normal, light, camera, uv);
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(screenPoint, color);
+        }
+    }
+}
+
+static inline void fillTType2(const Point3 &w0, const Point3 &w1, const Point3 &w2, const Point3 &s0, const Point3 &s1, const Point3 &s2, const TexturePoint &t1, const TexturePoint &t2, const TexturePoint &t3, const Vector3 &n1, const Vector3 &n2, const Vector3 &n3, const TexturedMaterial &material, const Light &light, const Camera &camera)
+{
+    auto yStart = static_cast<int>(s0.y());
+    auto yEnd = static_cast<int>(s2.y());
+    auto dx0 = s1.x() - s0.x();
+    auto dy0 = s1.y() - s0.y();
+    auto dx1 = s2.x() - s0.x();
+    auto dy1 = s2.y() - s0.y();
+
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
+    for(int y = yStart + 1; y <= yEnd; y++)
+    {
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
+
+        for(int x = xStart + 1; x <= xEnd; x++)
+        {
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            Point3 worldPoint(
+                barycentric.interpolate(w0.x(), w1.x(), w2.x()),
+                barycentric.interpolate(w0.y(), w1.y(), w2.y()),
+                barycentric.interpolate(w0.z(), w1.z(), w2.z())
+            );
+            Point3 screenPoint(x, y, z);
+            Vector3 normal(
+                barycentric.interpolate(n1.x(), n2.x(), n3.x()),
+                barycentric.interpolate(n1.y(), n2.y(), n3.y()),
+                barycentric.interpolate(n1.z(), n2.z(), n3.z())
+            );
+            TexturePoint uv(
+                barycentric.interpolate(t1.getX(), t2.getX(), t3.getX()),
+                barycentric.interpolate(t1.getY(), t2.getY(), t3.getY())
+            );
+
+            auto color = material.calculateColor(worldPoint, normal, light, camera, uv);
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(screenPoint, color);
+        }
+    }
+}
+
+static inline void fillTType3LowerPart(const Point3 &w0, const Point3 &w1, const Point3 &w2, const Point3 &s0, const Point3 &s1, const Point3 &s2, const TexturePoint &t1, const TexturePoint &t2, const TexturePoint &t3, const Vector3 &n1, const Vector3 &n2, const Vector3 &n3, const TexturedMaterial &material, const Light &light, const Camera &camera)
+{
+    auto yStart = static_cast<int>(s0.y());
+    auto yEnd = static_cast<int>(s1.y());
+    auto dx0 = s1.x() - s0.x();
+    auto dy0 = s1.y() - s0.y();
+    auto dx1 = s2.x() - s0.x();
+    auto dy1 = s2.y() - s0.y();
+
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
+    for(int y = yStart + 1; y <= yEnd; y++)
+    {
+        auto x0 = static_cast<int>((y - s0.y()) * dx0 / dy0 + s0.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
+
+        for(int x = xStart + 1; x <= xEnd; x++)
+        {
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            Point3 worldPoint(
+                barycentric.interpolate(w0.x(), w1.x(), w2.x()),
+                barycentric.interpolate(w0.y(), w1.y(), w2.y()),
+                barycentric.interpolate(w0.z(), w1.z(), w2.z())
+            );
+            Point3 screenPoint(x, y, z);
+            Vector3 normal(
+                barycentric.interpolate(n1.x(), n2.x(), n3.x()),
+                barycentric.interpolate(n1.y(), n2.y(), n3.y()),
+                barycentric.interpolate(n1.z(), n2.z(), n3.z())
+            );
+            TexturePoint uv(
+                barycentric.interpolate(t1.getX(), t2.getX(), t3.getX()),
+                barycentric.interpolate(t1.getY(), t2.getY(), t3.getY())
+            );
+
+            auto color = material.calculateColor(worldPoint, normal, light, camera, uv);
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(screenPoint, color);
+        }
+    }
+}
+
+static inline void fillTType3UpperPart(const Point3 &w0, const Point3 &w1, const Point3 &w2, const Point3 &s0, const Point3 &s1, const Point3 &s2, const TexturePoint &t1, const TexturePoint &t2, const TexturePoint &t3, const Vector3 &n1, const Vector3 &n2, const Vector3 &n3, const TexturedMaterial &material, const Light &light, const Camera &camera)
+{
+    auto yStart = static_cast<int>(s1.y());
+    auto yEnd = static_cast<int>(s2.y());
+    auto dx0 = s2.x() - s1.x();
+    auto dy0 = s2.y() - s1.y();
+    auto dx1 = s2.x() - s0.x();
+    auto dy1 = s2.y() - s0.y();
+
+    yStart = max(yStart, -1);
+    yEnd = min(yEnd, WINDOW_HEIGHT);
+
+    for(int y = yStart + 1; y <= yEnd; y++)
+    {
+        auto x0 = static_cast<int>((y - s1.y()) * dx0 / dy0 + s1.x());
+        auto x1 = static_cast<int>((y - s0.y()) * dx1 / dy1 + s0.x());
+        auto xStart = x0 < x1 ? x0 : x1;
+        auto xEnd = x0 < x1 ? x1 : x0;
+
+        xStart = max(xStart, -1);
+        xEnd = min(xEnd, WINDOW_WIDTH);
+
+        for(int x = xStart + 1; x <= xEnd; x++)
+        {
+            Point3 point(x + 0.5f, y + 0.5f, 0.0f);
+            BarycentricPoint barycentric(s0, s1, s2, point);
+            auto z = barycentric.interpolate(s0.z(), s1.z(), s2.z());
+            Point3 worldPoint(
+                barycentric.interpolate(w0.x(), w1.x(), w2.x()),
+                barycentric.interpolate(w0.y(), w1.y(), w2.y()),
+                barycentric.interpolate(w0.z(), w1.z(), w2.z())
+            );
+            Point3 screenPoint(x, y, z);
+            Vector3 normal(
+                barycentric.interpolate(n1.x(), n2.x(), n3.x()),
+                barycentric.interpolate(n1.y(), n2.y(), n3.y()),
+                barycentric.interpolate(n1.z(), n2.z(), n3.z())
+            );
+            TexturePoint uv(
+                barycentric.interpolate(t1.getX(), t2.getX(), t3.getX()),
+                barycentric.interpolate(t1.getY(), t2.getY(), t3.getY())
+            );
+
+            auto color = material.calculateColor(worldPoint, normal, light, camera, uv);
+            Renderer::INSTANCE.renderScreenSpacePointWithZBuffer(screenPoint, color);
+        }
+    }
+}
+
 static inline float simplePow128(float x)
 {
     auto pow2 = x * x;
@@ -392,6 +593,45 @@ void Model::fillTriangleWithVertexColor(Point3 &s0, Point3 &s1, Point3 &s2, Vert
     {
         fillVType3LowerPart(s0, s1, s2, c0, c1, c2);
         fillVType3UpperPart(s0, s1, s2, c0, c1, c2);
+    }
+}
+
+void Model::fillTriangleWithTexture(Point3 &w0, Point3 &w1, Point3 &w2, Point3 &s0, Point3 &s1, Point3 &s2, TexturePoint &t0, TexturePoint &t1, TexturePoint &t2, Vector3 &n0, Vector3 &n1, Vector3 &n2, const TexturedMaterial &texture, Light light, Camera camera)
+{
+    if(s0.y() > s1.y())
+    {
+        std::swap(w0, w1);
+        std::swap(s0, s1);
+        std::swap(t0, t1);
+        std::swap(n0, n1);
+    }
+    if(s0.y() > s2.y())
+    {
+        std::swap(w0, w2);
+        std::swap(s0, s2);
+        std::swap(t0, t2);
+        std::swap(n0, n2);
+    }
+    if(s1.y() > s2.y())
+    {
+        std::swap(w1, w2);
+        std::swap(s1, s2);
+        std::swap(t1, t2);
+        std::swap(n1, n2);
+    }
+
+    if(static_cast<int>(s0.y()) == static_cast<int>(s1.y()))
+    {
+        fillTType1(w0, w1, w2, s0, s1, s2, t0, t1, t2, n0, n1, n2, texture, light, camera);
+    }
+    else if(static_cast<int>(s1.y()) == static_cast<int>(s2.y()))
+    {
+        fillTType2(w0, w1, w2, s0, s1, s2, t0, t1, t2, n0, n1, n2, texture, light, camera);
+    }
+    else
+    {
+        fillTType3LowerPart(w0, w1, w2, s0, s1, s2, t0, t1, t2, n0, n1, n2, texture, light, camera);
+        fillTType3UpperPart(w0, w1, w2, s0, s1, s2, t0, t1, t2, n0, n1, n2, texture, light, camera);
     }
 }
 
@@ -512,15 +752,15 @@ void Model::renderWithMaterial(const Camera &camera, const Material &material, c
         Point3 temp;
         Point3 s0, s1, s2;
         w0.asProduct(transform, p0);
-        n0.asProduct(transform, getVertex(triangle, 0).normal);
+        n0.asProduct(transform, getVertex(triangle, 0).normal).normalize();
         temp.asProduct(camera.getWorldToView(), w0);
         s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
         w1.asProduct(transform, p1);
-        n1.asProduct(transform, getVertex(triangle, 1).normal);
+        n1.asProduct(transform, getVertex(triangle, 1).normal).normalize();
         temp.asProduct(camera.getWorldToView(), w1);
         s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
         w2.asProduct(transform, p2);
-        n2.asProduct(transform, getVertex(triangle, 2).normal);
+        n2.asProduct(transform, getVertex(triangle, 2).normal).normalize();
         temp.asProduct(camera.getWorldToView(), w2);
         s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
 
@@ -535,5 +775,43 @@ void Model::renderWithMaterial(const Camera &camera, const Material &material, c
         calculateColor(w2, n2, material, light, camera, &c2);
 
         fillTriangleWithVertexColor(s0, s1, s2, c0, c1, c2);
+    }
+}
+
+void Model::renderWithTexture(const Camera &camera, const TexturedMaterial &material, const Light &light)
+{
+    for (Triangle &triangle : triangles)
+    {
+        const Point3 &p0 = getVertex(triangle, 0).getPos();
+        const Point3 &p1 = getVertex(triangle, 1).getPos();
+        const Point3 &p2 = getVertex(triangle, 2).getPos();
+        Point3 w0, w1, w2;
+        Vector3 n0, n1, n2;
+        Point3 temp;
+        Point3 s0, s1, s2;
+        w0.asProduct(transform, p0);
+        n0.asProduct(transform, getVertex(triangle, 0).normal).normalize();
+        temp.asProduct(camera.getWorldToView(), w0);
+        s0.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        w1.asProduct(transform, p1);
+        n1.asProduct(transform, getVertex(triangle, 1).normal).normalize();
+        temp.asProduct(camera.getWorldToView(), w1);
+        s1.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+        w2.asProduct(transform, p2);
+        n2.asProduct(transform, getVertex(triangle, 2).normal).normalize();
+        temp.asProduct(camera.getWorldToView(), w2);
+        s2.asProduct(camera.getViewToScreen(), temp).moveToPixelCenter();
+
+        if((s1.x() - s0.x()) * (s2.y() - s0.y()) - (s1.y() - s0.y()) * (s2.x() - s0.x()) > 0)
+        {
+            continue;
+        }
+
+        TexturePoint t0, t1, t2;
+        t0 = getTexture(triangle, 0);
+        t1 = getTexture(triangle, 1);
+        t2 = getTexture(triangle, 2);
+
+        fillTriangleWithTexture(w0, w1, w2, s0, s1, s2, t0, t1, t2, n0, n1, n2, material, light, camera);
     }
 }
