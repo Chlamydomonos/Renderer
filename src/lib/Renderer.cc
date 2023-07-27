@@ -57,12 +57,13 @@ void Renderer::init()
     texturedMaterial = std::make_unique<TexturedMaterial>(bitmap);
     bitmap = (Bitmap)LoadImage(NULL, "D:/cube.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
     cubeMaterial = std::make_unique<TexturedMaterial>(bitmap);
+    bmp.clear();
 }
 
 void Renderer::render(PaintDevice canvas)
 {
     resetZBuffer();
-    this->canvas = canvas;
+    bmp.clear();
 
     auto currentModel = (int)mode / 5 ? importedModel.get() : cube.get();
 
@@ -174,18 +175,20 @@ void Renderer::render(PaintDevice canvas)
         importedModel->renderWithTexture(camera, *texturedMaterial, light);
         break;
     }
+
+    bmp.render(canvas);
 }
 
 void Renderer::render2dPoint(const Point2 &point, Color color)
 {
-    SetPixel(canvas, point.x(), WINDOW_HEIGHT - point.y(), color);
+    bmp.setPixel(point.x(), WINDOW_HEIGHT - point.y(), color);
 }
 
 void Renderer::renderScreenSpacePoint(const Point3 &point, Color color)
 {
     auto x = point.x();
     auto y = WINDOW_HEIGHT - point.y();
-    SetPixel(canvas, x, y, color);
+    bmp.setPixel(x, y, color);
 }
 
 void Renderer::renderWorldSpacePoint(const Point3 &point, const Camera &camera, Color color)
@@ -197,7 +200,7 @@ void Renderer::renderWorldSpacePoint(const Point3 &point, const Camera &camera, 
 
     auto x = screenSpacePoint.x();
     auto y = WINDOW_HEIGHT - screenSpacePoint.y();
-    SetPixel(canvas, x, y, color);
+    bmp.setPixel(x, y, color);
 }
 
 void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, const Camera &camera, Color color)
@@ -221,7 +224,7 @@ void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, 
     {
         auto x = x0 + i * dx / steps;
         auto y = y0 + i * dy / steps;
-        SetPixel(canvas, x, y, color);
+        bmp.setPixel(x, y, color);
     }
 }
 
@@ -251,7 +254,7 @@ void Renderer::renderWorldSpaceLine(const Point3 &point0, const Point3 &point1, 
         c0.asProduct(color0, 1.0f - t);
         c1.asProduct(color1, t);
         c0.asSum(c0, c1);
-        SetPixel(canvas, x, y, c0.toColor());
+        bmp.setPixel(x, y, c0.toColor());
     }
 }
 
@@ -267,7 +270,7 @@ void Renderer::renderScreenSpacePointWithZBuffer(const Point3 &point, Color colo
     auto z = point.z();
     if(z > zBuffer[x][y])
     {
-        SetPixel(canvas, x, y, color);
+        bmp.setPixel(x, y, color);
         zBuffer[x][y] = z;
     }
 }
@@ -288,7 +291,7 @@ void Renderer::renderWorldSpacePointWithZBuffer(const Point3 &point, const Camer
     auto z = screenSpacePoint.z();
     if(z > zBuffer[x][y])
     {
-        SetPixel(canvas, x, y, color);
+        bmp.setPixel(x, y, color);
         zBuffer[x][y] = z;
     }
 }
@@ -324,7 +327,7 @@ void Renderer::renderWorldSpaceLineWithZBuffer(const Point3 &point0, const Point
         auto z = z0 + i * dz / steps;
         if(z > zBuffer[x][y])
         {
-            SetPixel(canvas, x, y, color);
+            bmp.setPixel(x, y, color);
             zBuffer[x][y] = z;
         }
     }

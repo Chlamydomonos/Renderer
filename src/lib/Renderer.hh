@@ -5,6 +5,7 @@
 #include "geometry3.hh"
 #include "Camera.hh"
 #include "VertexColor.hh"
+#include "FasterBMP.hh"
 
 #include <xutility>
 
@@ -15,7 +16,7 @@ private:
     Renderer(const Renderer&) = delete;
     Renderer &operator=(const Renderer&) = delete;
     float zBuffer[WINDOW_WIDTH][WINDOW_HEIGHT]{0.0f};
-    PaintDevice canvas;
+    FasterBMP bmp;
 public:
     static Renderer INSTANCE;
     void resetZBuffer()
